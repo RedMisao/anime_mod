@@ -6,7 +6,7 @@ This is a backup. The selectable professions are playable but are missing abilit
 
 This mod adds anime (and manga, and light novel) characters as professions.  Non-exhaustive as time is a limited resource in my reality.
 
-**The mod's folder goes in /data/mods/**.  Last updated for game version: 2024-12-08-2245 experimental.
+**The mod's folder goes in /data/mods/**.  Last updated for game version: Experimental 2024-12-08-2245.
 
 To pick a character, select the **Anime Mod** scenario when creating a new character.
 
