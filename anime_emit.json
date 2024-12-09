@@ -1,0 +1,9 @@
+[
+  {
+    "id": "emit_amaterasu",
+    "type": "emit",
+    "field": "fd_fire",
+    "intensity": 1,
+    "qty": 1
+  }
+]

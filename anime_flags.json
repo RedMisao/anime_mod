@@ -1,0 +1,30 @@
+[
+  {
+    "id": "HIVE_MIND",
+    "type": "monster_flag",
+    "//": "This monster is part of a hive mind"
+  },
+  {
+    "id": "TEEP_IMMUNE",
+    "type": "monster_flag",
+    "//": "Immune to telepathic damage"
+  },
+  {
+    "id": "TEEPSHIELD",
+    "type": "json_flag",
+    "info": "You are immune to telepathy."
+  },
+  {
+    "id": "COMPATIBILITY_FLAGS_END_HERE",
+    "type": "json_flag",
+    "//": "Flags before this are added for cross-mod compatibility"
+  },
+  {
+    "id": "IRON_SAND_WEAPON",
+    "type": "json_flag"
+  },
+  {
+    "id": "MISAKA_NV",
+    "type": "json_flag"
+  }
+]

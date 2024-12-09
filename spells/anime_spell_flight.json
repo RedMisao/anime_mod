@@ -1,0 +1,123 @@
+[
+  {
+    "id": "fly_downwards",
+    "type": "SPELL",
+    "name": "<color_light_cyan>[↓]</color> Fly downwards",
+    "description": "Fly downwards.",
+    "spell_class": "NONE",
+    "teachable": false,
+    "valid_targets": [ "self" ],
+    "effect": "effect_on_condition",
+    "effect_str": "fly_downwards_eoc",
+    "shape": "blast",
+    "difficulty": -50,
+    "message": "",
+    "base_casting_time": 85,
+    "flags": [ "NO_FAIL", "NO_HANDS", "NO_LEGS", "NON_MAGICAL", "SILENT" ],
+    "//": "Exactly the same as the Touhou mod 'flight' system",
+    "//2": "Except this is handled a bit different. By turning the flight system into an aura-cycling EOC, adding and removing the fly spells with the EOC events"
+  },
+  {
+    "id": "fly_upwards",
+    "type": "SPELL",
+    "name": "<color_light_cyan>[↑]</color> Fly upwards",
+    "description": "Fly upwards.",
+    "spell_class": "NONE",
+    "teachable": false,
+    "valid_targets": [ "self" ],
+    "effect": "effect_on_condition",
+    "effect_str": "fly_upwards_eoc",
+    "shape": "blast",
+    "difficulty": -50,
+    "message": "",
+    "base_casting_time": 85,
+    "flags": [ "NO_FAIL", "NO_HANDS", "NO_LEGS", "NON_MAGICAL", "SILENT" ]
+  },
+  {
+    "id": "fly_downwards_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "u_val": "u_winged_loc" } },
+      { "location_variable_adjust": { "context_val": "u_winged_loc" }, "z_adjust": 0 },
+      {
+        "if": { "map_terrain_with_flag": "EMPTY_SPACE", "loc": { "context_val": "u_winged_loc" } },
+        "then": { "run_eocs": [ "fly_downwards2_eoc" ] },
+        "else": { "u_message": "You can't descend there.", "type": "mixed" }
+      }
+    ]
+  },
+  {
+    "id": "fly_downwards2_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "u_val": "u_winged_loc" } },
+      { "location_variable_adjust": { "context_val": "u_winged_loc" }, "z_adjust": -1 },
+      {
+        "if": { "map_terrain_with_flag": "FLAT", "loc": { "context_val": "u_winged_loc" } },
+        "then": [
+          { "u_message": "You fly downwards.", "type": "good" },
+          { "u_teleport": { "context_val": "u_winged_loc" } }
+        ],
+        "else": { "run_eocs": [ "fly_downwards3_eoc" ] }
+      }
+    ]
+  },
+  {
+    "id": "fly_downwards3_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": { "map_terrain_with_flag": "ROAD", "loc": { "context_val": "u_winged_loc" } },
+        "then": [
+          { "u_message": "You fly downwards.", "type": "good" },
+          { "u_teleport": { "context_val": "u_winged_loc" } }
+        ],
+        "else": { "run_eocs": [ "fly_downwards4_eoc" ] }
+      }
+    ]
+  },
+  {
+    "id": "fly_downwards4_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": { "map_terrain_with_flag": "BURROWABLE", "loc": { "context_val": "u_winged_loc" } },
+        "then": [
+          { "u_message": "You fly downwards.", "type": "good" },
+          { "u_teleport": { "context_val": "u_winged_loc" } }
+        ],
+        "else": { "run_eocs": [ "fly_downwards5_eoc" ] }
+      }
+    ]
+  },
+  {
+    "id": "fly_downwards5_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": { "map_terrain_with_flag": "TRANSPARENT", "loc": { "context_val": "u_winged_loc" } },
+        "then": [
+          { "u_message": "You fly downwards.", "type": "good" },
+          { "u_teleport": { "context_val": "u_winged_loc" } }
+        ],
+        "else": { "u_message": "You can't descend there.", "type": "mixed" }
+      }
+    ]
+  },
+  {
+    "id": "fly_upwards_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "u_val": "u_winged_loc" } },
+      { "location_variable_adjust": { "context_val": "u_winged_loc" }, "z_adjust": 1 },
+      {
+        "if": { "map_terrain_with_flag": "EMPTY_SPACE", "loc": { "context_val": "u_winged_loc" } },
+        "then": [
+          { "u_message": "You fly upwards.", "type": "good" },
+          { "u_teleport": { "context_val": "u_winged_loc" } }
+        ],
+        "else": { "u_message": "You can't fly there.", "type": "mixed" }
+      }
+    ]
+  }
+]

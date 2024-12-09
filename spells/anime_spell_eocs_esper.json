@@ -1,0 +1,724 @@
+[
+  {
+    "id": "anime_esper_stopped_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You can't keep your powers!", "type": "bad" },
+      { "math": [ "var_mikoto_electromagnetism", "=", "0" ] },
+      { "math": [ "var_iron_sand_manipulation", "=", "0" ] },
+      { "math": [ "var_mikoto_wings", "=", "0" ] },
+      { "u_lose_effect": "anime_electromagnetism_effect" },
+      { "u_lose_effect": "iron_sand_manipulation_effect" },
+      { "u_lose_effect": "anime_flight_mikoto_effect" },
+      { "math": [ "var_esper_stopped", "=", "0" ] },
+      { "math": [ "var_esper_accelerator_stopped", "=", "0" ] }
+    ]
+  },
+  {
+    "id": "dash_accelerator_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 16,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "global_val": "var_dash_accelerator_loc" }
+        },
+        "then": [
+          { "u_add_effect": "dash_levitation", "duration": "2 s" },
+          { "u_cast_spell": { "id": "dash_accelerator2" }, "loc": { "global_val": "var_dash_accelerator_loc" } }
+        ],
+        "else": [
+          { "u_message": "Canceled" }
+        ]
+      }
+    ],
+    "//": "Simpler version of air_burst_electric_eoc "
+  },
+  
+  
+  
+  
+  {
+    "id": "accelerator_choker_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_accelerator_choker", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_accelerator_choker", "=", "1" ] },
+      { "run_eocs": [ "accelerator_choker_start_eoc" ] }
+    ],
+    "false_effect": [ { "run_eocs": "accelerator_choker_toggle_eoc" } ],
+    "//": "Based on mikoto_electromagnetism_eoc "
+  },
+  {
+    "id": "accelerator_choker_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_vitamin('vitamin_accelerator_battery')", ">=", "15" ] },
+    "effect": [ { "run_eocs": [ "accelerator_choker_cycle_1" ] } ],
+    "false_effect": [
+      { "u_message": "The choker is at very low battery, you cannot enable Esper mode yet!", "type": "bad" },
+      { "math": [ "var_accelerator_choker", "=", "0" ] }
+    ],
+    "//": "This check is applied before starting the cycle, so Accelerator can go down that if already active, but not activate it to prevent running out of battery",
+    "//2": "This is 15 min in Normal mode, or 10 s in Esper mode (see below for further explanation)",
+    "//WIP": "Add 'low battery' mode, basically the same but prevents activating Esper mode, so basically the same until like 1 - 2 h or so"
+  },
+  {
+    "id": "accelerator_choker_cycle_1",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_accelerator_choker", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "accelerator_choker_cycle_2" ] } ],
+    "//IMPORTANT": "No false_effect here because the toggle is handled upstream. Adding a(ny) false effect results in duplicating the message"
+  },
+  {
+    "id": "accelerator_choker_cycle_2",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_esper_accelerator_stopped", "==", "0" ] },
+    "effect": [ { "run_eocs": [ "accelerator_choker_cycle_3" ] } ],
+    "false_effect": [ { "run_eocs": "anime_esper_stopped_eoc" } ],
+    "//": "This is the 'check for concentration' step. The var_STOPPED is handled by anime_esper_stopped_eoc "
+  },
+  {
+    "id": "accelerator_choker_cycle_3",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_vitamin('vitamin_accelerator_battery')", ">=", "1" ] },
+    "effect": [
+      { "math": [ "u_vitamin('vitamin_accelerator_battery')", "-=", "3" ] },
+      { "u_add_effect": "accelerator_esper_mode_effect", "duration": "3 s" },
+      { "run_eocs": [ "accelerator_choker_cycle_1" ], "time_in_future": "2 s" }
+    ],
+    "false_effect": [ { "run_eocs": "accelerator_choker_oom_eoc" } ],
+    "//": "Total battery pool is 1440 min per day (Normal mode)",
+    "//2": "1440 / 3 * 2 = 960 s of having this active (Esper mode), which is 16 m. The real, total Esper mode duration is 960 + 15 s due passive vitamin regen"
+    "//3": "This is as granular as the drain can get, without reducing it to 864 + 14 s (14.4 m)",
+    "//WIP": ""
+  },
+  {
+    "id": "accelerator_choker_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You toggle the switch of the choker.", "type": "mixed" },
+      { "math": [ "var_accelerator_choker", "=", "0" ] },
+      { "u_lose_effect": "accelerator_esper_mode_effect" }
+    ]
+  },
+  {
+    "id": "accelerator_choker_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "accelerator_choker_oom_snippet", "snippet": true, "type": "bad" },
+      { "math": [ "var_accelerator_choker", "=", "0" ] },
+      { "u_lose_effect": "accelerator_esper_mode_effect" }
+    ],
+    "//WIP": ""
+  },
+  
+  
+  
+  
+  {
+    "id": "accelerator_earthquake_eoc",
+    "type": "effect_on_condition",
+    "condition": { "u_has_effect": "accelerator_esper_mode_effect" },
+    "effect": [ { "u_cast_spell": { "id": "accelerator_earthquake2" } } ],
+    "false_effect": [ { "u_message": "You need support from the Network to use your powers.", "type": "mixed" } ],
+    "//": "Just checks if Accelerator is in Esper mode, else the cast fails",
+    "//WIP": "Check this is immediately usable after switching ON, else add 'dummy' to the effect and make this track var_accelerator_choker instead",
+    "//WIP2": "TEST THIS"
+  },
+  {
+    "id": "air_burst_electric_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 20,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "global_val": "var_air_burst_loc" }
+        },
+        "then": [
+          { "math": [ "var_air_burst_distance", "=", "( distance('u', var_air_burst_loc) )"] },
+          { "u_add_effect": "dash_levitation", "duration": "2 s" },
+          { "u_cast_spell": { "id": "air_burst_electric2" }, "loc": { "global_val": "var_air_burst_loc" } },
+          { "math": [ "u_val('mana')", "-=", "max( 0, ( ( var_air_burst_distance - 7 ) * 10 ) )" ] }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "66" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ],
+    "//": "Based on dash_meiling_eoc . This dash marks a location, and then: sets distance to location, adds the LEVITATION effect for Worst",
+    "//2": "Then, forces Worst to cast the dash spell to the location, and reduces mana if the distance was higher than 7 tiles, up to <200 mana at 20 tiles away"
+  },
+  {
+    "id": "mikoto_electromagnetism_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_mikoto_electromagnetism", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_mikoto_electromagnetism", "=", "1" ] },
+      { "run_eocs": [ "mikoto_electromagnetism_start_eoc" ] }
+    ],
+    "false_effect": [ { "run_eocs": "mikoto_electromagnetism_toggle_eoc" } ],
+    "//": "Based on stance_ninja_taijutsu_eoc . An extra step was added to check for 'concentration'-style abilities ('maintenance' in MoM)",
+    "//2": "This EOC checks the var_ELECTROMAGNETISM is active. If its not already running, it runs the START_eoc ",
+    "//3": "If var_ELECTROMAGNETISM is active, it runs the TOGGLE_eoc "
+  },
+  {
+    "id": "mikoto_electromagnetism_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "3" ] },
+    "effect": [ 
+      { "math": [ "u_val('mana')", "-=", "3" ] },
+      { "run_eocs": [ "mikoto_electromagnetism_cycle_1" ] }
+    ],
+    "false_effect": [
+      { "u_message": "You're too tired!", "type": "bad" },
+      { "math": [ "var_mikoto_electromagnetism", "=", "0" ] },
+      { "u_lose_effect": "anime_electromagnetism_effect" }
+    ]
+  },
+  {
+    "id": "mikoto_electromagnetism_cycle_1",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_mikoto_electromagnetism", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "mikoto_electromagnetism_cycle_2" ] } ],
+    "//IMPORTANT": "No false_effect here because the toggle is handled upstream. Adding a(ny) false effect results in duplicating the message"
+  },
+  {
+    "id": "mikoto_electromagnetism_cycle_2",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_esper_stopped", "==", "0" ] },
+    "effect": [ { "run_eocs": [ "mikoto_electromagnetism_cycle_3" ] } ],
+    "false_effect": [ { "run_eocs": "anime_esper_stopped_eoc" } ],
+    "//": "This is the 'check for concentration' step. The var_STOPPED is handled at anime_eocs.json "
+  },
+  {
+    "id": "mikoto_electromagnetism_cycle_3",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "3" ] },
+    "effect": [
+      { "math": [ "u_val('mana')", "-=", "3" ] },
+      { "u_add_effect": "anime_electromagnetism_effect", "duration": "3 s" },
+      { "run_eocs": [ "mikoto_electromagnetism_cycle_1" ], "time_in_future": "2 s" }
+    ],
+    "false_effect": [ { "run_eocs": "mikoto_electromagnetism_oom_eoc" } ]
+  },
+  {
+    "id": "mikoto_electromagnetism_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You relax and disable the static field surrounding you.", "type": "mixed" },
+      { "math": [ "var_mikoto_electromagnetism", "=", "0" ] },
+      { "u_lose_effect": "anime_electromagnetism_effect" }
+    ]
+  },
+  {
+    "id": "mikoto_electromagnetism_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You're too tired to continue!", "type": "bad" },
+      { "math": [ "var_mikoto_electromagnetism", "=", "0" ] },
+      { "u_lose_effect": "anime_electromagnetism_effect" }
+    ]
+  },
+  {
+    "id": "iron_sand_manipulation_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_iron_sand_manipulation", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_iron_sand_manipulation", "=", "1" ] },
+      { "run_eocs": [ "iron_sand_check_eoc" ] }
+    ],
+    "false_effect": [ { "run_eocs": "iron_sand_manipulation_toggle_eoc" } ],
+    "//": "Based on stance_ninja_taijutsu_eoc ",
+    "//2": "This checks the var_IRONSAND is active. If its not already running, it runs the START_eoc ",
+    "//3": "If var_IRONSAND is active, it runs the TOGGLE_eoc "
+  },
+  {
+    "id": "iron_sand_check_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      { "u_location_variable": { "global_val": "var_mikoto_start_loc" } },
+      {
+        "u_map_run_eocs": [ 
+          {
+            "id": "iron_sand_success_eoc",
+            "effect": [ { "math": [ "var_iron_sand_found", "=", "1" ] } ]
+          }
+        ],
+        "condition": {
+          "or": [
+            { "map_terrain_id": "t_sand_underground", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_terrain_id": "t_swater_surf", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_terrain_id": "t_dirt", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_terrain_id": "t_sand", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_terrain_id": "t_sandmound", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_terrain_id": "t_sandbox", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_furniture_id": "f_sandbag_half", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_furniture_id": "f_sandbag_wall", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_furniture_id": "f_sand_castle", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_furniture_id": "f_sand_mound_short", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_furniture_id": "f_sand_mound_mid", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_furniture_id": "f_sand_mound_tall", "loc": { "global_val": "var_mikoto_start_loc" } }
+          ]
+        },
+        "range": 2,
+        "store_coordinates_in": { "global_val": "var_mikoto_start_loc" },
+        "stop_at_first": true
+      },
+      {
+        "if": { "math": [ "var_iron_sand_found", "==", "1" ] },
+        "then": [ 
+          { "math": [ "var_iron_sand_found", "=", "0" ] },
+          { "run_eocs": [ "iron_sand_manipulation_start_eoc" ] } 
+        ],
+        "else": [
+          { "math": [ "var_iron_sand_manipulation", "=", "0" ] },
+          { "u_message": "You require a nearby source of iron sand.", "type": "mixed" }
+        ]
+      }
+    ],
+    "//": "Checks around Misaka if there is 'sand' (includes dirt), and if so begins manipulating iron sand",
+    "//2": "The goal was for Misaka to 'pull' iron sand from nearby, but not terrain directly beneath her, however this is minor so it doesn't matter"
+  },
+  {
+    "id": "iron_sand_manipulation_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "2" ] },
+    "effect": [ 
+      { "math": [ "u_val('mana')", "-=", "2" ] },
+      { "u_message": "You begin shaping the iron sand…", "type": "mixed" },
+      { "run_eocs": [ "iron_sand_manipulation_cycle_1" ] }
+    ],
+    "false_effect": [
+      { "u_message": "You're too tired!", "type": "bad" },
+      { "math": [ "var_iron_sand_manipulation", "=", "0" ] },
+      { "u_lose_effect": "iron_sand_manipulation_effect" }
+    ]
+  },
+  {
+    "id": "iron_sand_manipulation_cycle_1",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_iron_sand_manipulation", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "iron_sand_manipulation_cycle_2" ] } ],
+    "//IMPORTANT": "No false_effect here because the toggle is handled upstream. Adding a(ny) false effect results in duplicating the message"
+  },
+  {
+    "id": "iron_sand_manipulation_cycle_2",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_esper_stopped", "==", "0" ] },
+    "effect": [ { "run_eocs": [ "iron_sand_manipulation_cycle_3" ] } ],
+    "false_effect": [ { "run_eocs": "anime_esper_stopped_eoc" } ],
+    "//": "This is the 'check for concentration' step. The var_STOPPED is handled at anime_eocs.json "
+  },
+  {
+    "id": "iron_sand_manipulation_cycle_3",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "2" ] },
+    "effect": [
+      { "math": [ "u_val('mana')", "-=", "2" ] },
+      { "u_add_effect": "iron_sand_manipulation_effect", "duration": "3 s" },
+      { "run_eocs": [ "iron_sand_manipulation_cycle_1" ], "time_in_future": "2 s" }
+    ],
+    "false_effect": [ { "run_eocs": "iron_sand_manipulation_oom_eoc" } ]
+  },
+  {
+    "id": "iron_sand_manipulation_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You relax and stop manipulating the iron sand.", "type": "mixed" },
+      { "math": [ "var_iron_sand_manipulation", "=", "0" ] },
+      { "u_lose_effect": "iron_sand_manipulation_effect" }
+    ]
+  },
+  {
+    "id": "iron_sand_manipulation_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You're too tired to continue!", "type": "bad" },
+      { "math": [ "var_iron_sand_manipulation", "=", "0" ] },
+      { "u_lose_effect": "iron_sand_manipulation_effect" }
+    ]
+  },
+  {
+    "id": "iron_sand_manipulation_sword_eoc",
+    "type": "effect_on_condition",
+    "condition": {
+      "or": [
+        { "not": "u_has_weapon" },
+        { "u_has_wielded_with_flag": "IRON_SAND_WEAPON" }
+      ]
+    },
+    "//": "First, it checks if Misaka is NOT wielding anything, OR she's wielding an iron sand weapon",
+    "effect": [
+      {
+        "u_run_inv_eocs": "all",
+        "search_data": [ 
+          { "id": "iron_sand_sword" }
+        ],
+        "true_eocs": [ 
+          {
+            "id": "iron_sand_manipulation_refund_eoc",
+            "effect": [
+              "npc_die",
+              { "math": [ "u_val('mana')", "+=", "33 + rand(17)" ] },
+              { "u_message": "You dismiss the iron sand weapon.", "type": "mixed" }
+            ]
+          }
+        ],
+        "//2": "Then, checks if she has an iron sand sword in her inventory, if so it dismisses it and refunds the cost of casting, plus rand(1/2) the cost of summoning",
+        "false_eocs": [ 
+          {
+            "id": "iron_sand_manipulation_sword_check_whip_eoc",
+            "effect": [
+              {
+                "u_run_inv_eocs": "all",
+                "search_data": [ 
+                  { "id": "iron_sand_whip" }
+                ],
+                "true_eocs": [ 
+                  {
+                    "id": "iron_sand_manipulation_to_sword_eoc",
+                    "effect": [
+                      "npc_die",
+                      { "math": [ "u_val('mana')", "+=", "rand(17)" ] },
+                      { "u_message": "You contract the iron sand whip, turning it into a sword.", "type": "mixed" },
+                      { "u_cast_spell": { "id": "iron_sand_manipulation_sword2" } }
+                    ]
+                  }
+                ],
+                "//3": "If there was no iron sand sword in inventory, it checks if there's an iron sand whip, and turns it into a sword, refunding rand(1/2) the cost of summoning",
+                "false_eocs": [ 
+                  {
+                    "id": "iron_sand_manipulation_sword_map_check_eoc",
+                    "effect": [ 
+                      { "u_location_variable": { "global_val": "var_mikoto_start_loc" } },
+                      {
+                        "u_map_run_item_eocs": "all",
+                        "search_data": [ 
+                          { "id": "iron_sand_sword" },
+                          { "id": "iron_sand_whip" }
+                        ],
+                        "loc": { "global_val": "var_mikoto_start_loc" },
+                        "min_radius": 0,
+                        "max_radius": 64,
+                        "true_eocs": [
+                          {
+                            "id": "iron_sand_manipulation_sword_map_found_eoc",
+                            "effect": [ 
+                              "npc_die",
+                              { "math": [ "u_val('mana')", "+=", "rand(17)" ] },
+                              { "u_message": "You recall the iron sand, turning it into a sword.", "type": "mixed" },
+                              { "u_cast_spell": { "id": "iron_sand_manipulation_sword2" } }
+                            ]
+                          } 
+                        ],
+                        "//4": "If there wasn't an iron sand whip in inventory either, it checks for any iron sand weapon. If any is found, it's re-spawned, refunding rand(1/2) the cost of summoning",
+                        "false_eocs": [ 
+                          {
+                            "id": "iron_sand_manipulation_sword_map_no_eoc",
+                            "effect": [ 
+                              { "u_message": "You gather the iron sand around you, turning it into a sword.", "type": "mixed" },
+                              { "u_cast_spell": { "id": "iron_sand_manipulation_sword2" } }
+                            ],
+                            "//5": "Finally, if there was no iron sand weapon in the map, it spawns an iron sand sword"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "false_effect": [ { "u_message": "You need free hands to wield an iron sand sword.", "type": "mixed" } ],
+    "//6": "Because this is kind of clusterfucky, the comments are inside the EOC explaining what each step does",
+    "//7": "While some eocs can be recycled, they're set up indepedently as each message indicating the action is different",
+    "//note": "This can be simplified by using set_string_var of either sword or whip and referencing that in each step. But I won't do it now"
+  },
+  {
+    "id": "iron_sand_manipulation_whip_eoc",
+    "type": "effect_on_condition",
+    "condition": {
+      "or": [
+        { "not": "u_has_weapon" },
+        { "u_has_wielded_with_flag": "IRON_SAND_WEAPON" }
+      ]
+    },
+    "effect": [
+      {
+        "u_run_inv_eocs": "all",
+        "search_data": [ 
+          { "id": "iron_sand_whip" }
+        ],
+        "true_eocs": [ "iron_sand_manipulation_refund_eoc" ],
+        "false_eocs": [ 
+          {
+            "id": "iron_sand_manipulation_whip_check_sword_eoc",
+            "effect": [
+              {
+                "u_run_inv_eocs": "all",
+                "search_data": [ 
+                  { "id": "iron_sand_sword" }
+                ],
+                "true_eocs": [ 
+                  {
+                    "id": "iron_sand_manipulation_to_whip_eoc",
+                    "effect": [
+                      "npc_die",
+                      { "math": [ "u_val('mana')", "+=", "rand(17)" ] },
+                      { "u_message": "You extend the iron sand sword, turning it into a whip.", "type": "mixed" },
+                      { "u_cast_spell": { "id": "iron_sand_manipulation_whip2" } }
+                    ]
+                  }
+                ],
+                "false_eocs": [ 
+                  {
+                    "id": "iron_sand_manipulation_whip_map_check_eoc",
+                    "effect": [ 
+                      { "u_location_variable": { "global_val": "var_mikoto_start_loc" } },
+                      {
+                        "u_map_run_item_eocs": "all",
+                        "search_data": [ 
+                          { "id": "iron_sand_sword" },
+                          { "id": "iron_sand_whip" }
+                        ],
+                        "loc": { "global_val": "var_mikoto_start_loc" },
+                        "min_radius": 0,
+                        "max_radius": 64,
+                        "true_eocs": [
+                          {
+                            "id": "iron_sand_manipulation_whip_map_found_eoc",
+                            "effect": [ 
+                              "npc_die",
+                              { "math": [ "u_val('mana')", "+=", "rand(17)" ] },
+                              { "u_message": "You recall the iron sand, turning it into a whip.", "type": "mixed" },
+                              { "u_cast_spell": { "id": "iron_sand_manipulation_whip2" } }
+                            ]
+                          } 
+                        ],
+                        "false_eocs": [ 
+                          {
+                            "id": "iron_sand_manipulation_whip_map_no_eoc",
+                            "effect": [ 
+                              { "u_message": "You gather the iron sand around you, turning it into a whip.", "type": "mixed" },
+                              { "u_cast_spell": { "id": "iron_sand_manipulation_whip2" } }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          } 
+        ]
+      }
+    ],
+    "//": "Pretty much similar as above, re-uses one EOC as it's the same"
+  },
+  {
+    "id": "mikoto_wings_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_mikoto_wings", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_mikoto_wings", "=", "1" ] },
+      { "run_eocs": [ "mikoto_wings_check_eoc" ] }
+    ],
+    "false_effect": [ { "run_eocs": "mikoto_wings_toggle_eoc" } ],
+    "//": "Based on stance_ninja_taijutsu_eoc ",
+    "//2": "This checks the var_WINGS is active. If its not already running, it runs the next EOC",
+    "//3": "If var_WINGS is active, it runs the TOGGLE_eoc "
+  },
+  {
+    "id": "mikoto_wings_check_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      { "u_location_variable": { "global_val": "var_mikoto_start_loc" } },
+      {
+        "u_map_run_eocs": [ 
+          {
+            "id": "mikoto_wings_success_eoc",
+            "effect": [ { "math": [ "var_mikoto_wings_found", "=", "1" ] } ]
+          }
+        ],
+        "condition": {
+          "or": [
+            { "map_terrain_with_flag": "SHALLOW_WATER", "loc": { "global_val": "var_mikoto_start_loc" } },
+            { "map_terrain_with_flag": "DEEP_WATER", "loc": { "global_val": "var_mikoto_start_loc" } }
+          ]
+        },
+        "store_coordinates_in": { "global_val": "var_mikoto_start_loc" },
+        "range": 2,
+        "stop_at_first": true
+      },
+      {
+        "if": { "math": [ "var_mikoto_wings_found", "==", "1" ] },
+        "then": [ 
+          { "math": [ "var_mikoto_wings_found", "=", "0" ] },
+          { "run_eocs": [ "mikoto_wings_start_eoc" ] } 
+        ],
+        "else": [
+          { "math": [ "var_mikoto_wings", "=", "0" ] },
+          { "u_message": "You require a nearby source of water to begin electrolysis.", "type": "mixed" }
+        ]
+      }
+    ],
+    "//": "Checks around Misaka if there is 'water', and if so it activates her wings",
+    "//2": "Water per se cannot be identified from flags, there are like 50 different IDs for it, no counting mods and stuff, so this is a compromise"
+  },
+  {
+    "id": "mikoto_wings_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "3" ] },
+    "effect": [ 
+      { "math": [ "u_val('mana')", "-=", "3" ] },
+      { "u_message": "You perceive the faint smell of ozone, as electric wings materialize behind you.", "type": "mixed" },
+      { "run_eocs": [ "mikoto_wings_cycle_1" ] }
+    ],
+    "false_effect": [
+      { "u_message": "You're too tired to do electrolysis!", "type": "bad" },
+      { "math": [ "var_mikoto_wings", "=", "0" ] },
+      { "u_lose_effect": "anime_flight_mikoto_effect" }
+    ]
+  },
+  {
+    "id": "mikoto_wings_cycle_1",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_mikoto_wings", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "mikoto_wings_cycle_2" ] } ],
+    "//IMPORTANT": "No false_effect here because the toggle is handled upstream. Adding a(ny) false effect results in duplicating the message"
+  },
+  {
+    "id": "mikoto_wings_cycle_2",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_esper_stopped", "==", "0" ] },
+    "effect": [ { "run_eocs": [ "mikoto_wings_cycle_3" ] } ],
+    "false_effect": [ { "run_eocs": "anime_esper_stopped_eoc" } ],
+    "//": "This is the 'check for concentration' step. The var_STOPPED is handled at anime_eocs.json "
+  },
+  {
+    "id": "mikoto_wings_cycle_3",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "4" ] },
+    "effect": [
+      { "math": [ "u_val('mana')", "-=", "4" ] },
+      { "u_add_effect": "anime_flight_mikoto_effect", "duration": "3 s" },
+      { "run_eocs": [ "mikoto_wings_cycle_1" ], "time_in_future": "2 s" }
+    ],
+    "false_effect": [ { "run_eocs": "mikoto_wings_oom_eoc" } ]
+  },
+  {
+    "id": "mikoto_wings_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "Your wings dissipate, the air with a faint ozone smell.", "type": "mixed" },
+      { "math": [ "var_mikoto_wings", "=", "0" ] },
+      { "u_lose_effect": "anime_flight_mikoto_effect" }
+    ]
+  },
+  {
+    "id": "mikoto_wings_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You're too tired to continue!", "type": "bad" },
+      { "math": [ "var_mikoto_wings", "=", "0" ] },
+      { "u_lose_effect": "anime_flight_mikoto_effect" }
+    ]
+  },
+  {
+    "id": "railgun_4_spell_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "u_run_inv_eocs": "random",
+        "search_data": [ 
+          { "id": "combatnail" },
+          { "id": "bronze_nail" },
+          { "id": "nail" },
+          { "id": "nuts_bolts" }
+        ],
+        "true_eocs": [ 
+          {
+            "id": "railgun_4_spell_shoot",
+            "effect": [ 
+              { "math": [ "u_val('mana')", "-=", "35" ] },
+              { 
+                "u_cast_spell": { "id": "railgun_4_spell2" }, "targeted": true,
+                "true_eocs": [ 
+                  {
+                    "id": "railgun_4_spell_destroy_coin_eoc",
+                    "effect": [ 
+                      { "math": [ "u_val('mana')", "-=", "65" ] },
+                      "npc_die" 
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "false_eocs": [ 
+          {
+            "id": "railgun_4_spell_no",
+            "effect": [ { "u_message": "You don't have a coin-shaped item to use.", "type": "mixed" } ]
+          }
+        ]
+      }
+    ],
+    "//": "Same as below"
+  },
+  {
+    "id": "railgun_5_spell_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "u_run_inv_eocs": "random",
+        "search_data": [ 
+          { "flags": "COIN_SHAPED" },
+          { "material": "copper" },
+          { "material": "gold" },
+          { "material": "iron" },
+          { "material": "silver" },
+          { "material": "steel" }
+        ],
+        "true_eocs": [ 
+          {
+            "id": "railgun_5_spell_shoot",
+            "effect": [ 
+              { "math": [ "u_val('mana')", "-=", "15" ] },
+              { 
+                "u_cast_spell": { "id": "railgun_5_spell2" }, "targeted": true,
+                "true_eocs": [ 
+                  {
+                    "id": "railgun_5_spell_destroy_coin_eoc",
+                    "effect": [ 
+                      { "math": [ "u_val('mana')", "-=", "85" ] },
+                      "npc_die" 
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "false_eocs": [ 
+          {
+            "id": "railgun_5_spell_no",
+            "effect": [ { "u_message": "You don't have a coin-shaped item to use.", "type": "mixed" } ]
+          }
+        ]
+      }
+    ],
+    "//note": "So, id_blacklist seems bugged, adding it whitelist every item id. RobofacCoin and FlatCoin should be blacklisted, so they're not consumed by accident",
+    "//": "Searches for coins, then casts the spell, and consumes mana",
+    "//note2": "The mana consumption is bugged, in the sense it eats 15 + 85 even if cancelling the spellcast. Adding a refund as false_eocs doesn't work either"
+  }
+]

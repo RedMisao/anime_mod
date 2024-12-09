@@ -1,0 +1,676 @@
+[
+  {
+    "id": "anime_mod_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "SCENARIO_SPECIFIC",
+    "effect": [ 
+      { "run_eocs": [ "anime_mod_esper_start_eoc" ] },
+      { "run_eocs": [ "anime_mod_ninja_start_eoc" ] }
+    ],
+    "//": "Split in sub-EOCs so it's easier to handle"
+  },
+  {
+    "id": "anime_mod_esper_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "u_has_trait": "ESPER" },
+    "effect": [ 
+      { 
+        "run_eocs": [ 
+          {
+            "id": "accelerator_start_eoc",
+            "condition": { "u_has_trait": "PROF_ACCELERATOR" },
+            "effect": [ 
+              { "math": [ "u_vitamin('vitamin_accelerator_battery')", "=", "1440" ] },
+              { "math": [ "var_accelerator_reflection_1", "=", "1" ] }
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "misaka_start_eoc",
+            "condition": { "u_has_trait": "PROF_MISAKA" },
+            "effect": [ 
+              { "u_location_variable": { "global_val": "var_misaka_start_loc" } },
+              { "map_spawn_item": "misaka_guns", "use_item_group": true, "loc": { "global_val": "var_misaka_start_loc" } },
+              { "math": [ "u_skill('electronics')", "+=", "rand(1)" ] },
+              { "math": [ "u_skill('swimming')", "+=", "rand(1)" ] },
+              { "math": [ "var_misaka_stats", "=", "2 + rand(1)" ] },
+              {
+                "switch": { "math": [ "var_misaka_stats" ] },
+                "cases": [
+                  { 
+                    "case": 2, "effect": [
+                      { "u_lose_trait": "ELECTROMASTER_RADIO_NOISE" },
+                      { "u_add_trait": "ELECTROMASTER_RADIO_NOISE_2" },
+                      { "math": [ "u_spell_level('misaka_emp')", "=", "1" ] }
+                    ]
+                  },
+                  { 
+                    "case": 3, "effect": [
+                      { "u_lose_trait": "ELECTROMASTER_RADIO_NOISE" },
+                      { "u_add_trait": "ELECTROMASTER_RADIO_NOISE_3" },
+                      { "math": [ "u_spell_level('misaka_emp')", "=", "1" ] },
+                      { "math": [ "u_spell_level('misaka_lightning_spear')", "=", "1" ] }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "anime_mod_ninja_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "u_has_trait": "NINJA" },
+    "effect": [ 
+      { 
+        "run_eocs": [ 
+          {
+            "id": "itachi_start_eoc",
+            "condition": { "u_has_trait": "PROF_ITACHI" },
+            "effect": [ 
+              { "math": [ "u_ninja_speed", "=", "5" ] },
+              { "math": [ "u_ninja_hand_seals", "=", "5" ] }
+            ]
+          },
+          {
+            "id": "kakuzu_start_eoc",
+            "condition": { "u_has_trait": "PROF_KAKUZU" },
+            "effect": [ 
+              { "math": [ "u_ninja_speed", "=", "4" ] },
+              { "math": [ "u_ninja_hand_seals", "=", "3.5" ] },
+              { "math": [ "u_ninja_mask_number", "=", "5" ] },
+              { "math": [ "u_ninja_delay", "=", "2" ] }
+            ],
+            "//kakuzu": "There's a ~2 s delay when the jutsu is casted by a mask"
+          }
+        ]
+      }
+    ],
+    "//note": "The stats here are taken from the handbooks, present in the wiki, and are used in spell and spell EOC values. This is likely a WIP until I find a better way to cross-balance spells",
+    "//": "It is frankly impossible trying to set stats for ninjas. In the anime, Kakuzu's total delay (first hand seal starts to mask casting spell) is ~5 s on average for Katon Zukokku, for 3 seals and a hand seal stat of 3.5. Affinity does not apply here as he has the mechanism to go around the problem (literally a heart with the element)",
+    "//2": "Itachi's total delay is slightly more than 1 s for Katon Goukakyuu no jutsu, for 6 seals and a hand seal stat of 5, and then he's able to skip the first 3 seals",
+    "//3": "However, Kakashi has the same stat as Itachi, and he couldn't follow Itachi in some ninjutsu while using the Sharingan, he also can't skip seals he just does it faster",
+    "//4": "I'm using the following values under two assumptions. First, ninja experienced in their ninjutsu are already using the quick cast version of each spell (i.e. Itachi's >1 s cast time of Katon Goukakyuu), so the actual base spell duration is longer, not what's shown in the anime",
+    "//5": "Second assumption, 0.5 s for each hand seal. The hand seal stat reduces cast time by a flat amount (down to ~1/2 the seals required) while the speed stat reduces each hand seal duration (down to ~50% the base duration)"
+  },
+  {
+    "id": "anime_mod_eoc_WIP",
+    "type": "effect_on_condition",
+    "effect": [ 
+      {
+        "set_string_var": [ 
+          "esper_backlash", 
+          "mikoto_emp", 
+          "mikoto_emp2", 
+          "mikoto_emp3", 
+          "mikoto_emp4", 
+          "mikoto_electromagnetism", 
+          "mikoto_wings", 
+          "lightning_spear", 
+          "lightning_spear2", 
+          "lightning_spear3", 
+          "iron_sand_manipulation", 
+          "iron_sand_manipulation_sword", 
+          "iron_sand_manipulation_sword2", 
+          "iron_sand_manipulation_whip", 
+          "iron_sand_manipulation_sword2", 
+          "railgun_5_spell", 
+          "railgun_5_spell2" 
+        ],
+        "target_var": { "global_val": "var_esper_powers" }
+      }
+    ],
+    "//": "ALL esper powers should go here",
+    "//2": "Doesn't work, as setting the [ ids ] randomizes them. Thus, not used",
+    "//3": "Do not delete, see the comment below :)"
+  },
+  {
+    "id": "anime_esper_casted_magic",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_casts_spell",
+    "condition": { 
+      "and": [ 
+        { "u_has_trait": "ESPER" },
+        { "not": { "compare_string": [ "ESPER", { "context_val": "school" } ] } }
+      ] 
+    },
+    "effect": [ 
+      { "u_cast_spell": { "id": "esper_backlash", "hit_self": true } },
+      { "run_eocs": [ "anime_esper_powers_check_end_eoc" ] }
+    ],
+    "//": "This is automatically casted by espers if they try to cast magic",
+    "//note": "Can't use var_esper_powers + spell at the condition, else the game CTDs. This may be useful in the future"
+  },
+  {
+    "id": "anime_esper_powers_check_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": {
+      "and": [
+        {
+          "or": [
+            { "compare_string": [ "winded", { "context_val": "effect" } ] },
+            { "compare_string": [ "nausea", { "context_val": "effect" } ] },
+            { "compare_string": [ "asthma", { "context_val": "effect" } ] },
+            { "compare_string": [ "datura", { "context_val": "effect" } ] },
+            { "compare_string": [ "onfire", { "context_val": "effect" } ] },
+            { "compare_string": [ "staggered_character", { "context_val": "effect" } ] },
+            { "compare_string": [ "venom_dmg", { "context_val": "effect" } ] },
+            { "compare_string": [ "venom_pain", { "context_val": "effect" } ] },
+            { "compare_string": [ "taint", { "context_val": "effect" } ] },
+            { "compare_string": [ "meth", { "context_val": "effect" } ] },
+            { "compare_string": [ "weed_high", { "context_val": "effect" } ] },
+            { "compare_string": [ "high", { "context_val": "effect" } ] },
+            { "compare_string": [ "drunk", { "context_val": "effect" } ] },
+            { "compare_string": [ "zapped", { "context_val": "effect" } ] },
+            { "compare_string": [ "effect_psi_reduced_breathing", { "context_val": "effect" } ] },
+            { "compare_string": [ "effect_psi_null", { "context_val": "effect" } ] },
+            { "compare_string": [ "effect_psi_null_unbound", { "context_val": "effect" } ] },
+            { "compare_string": [ "dazed", { "context_val": "effect" } ] },
+            { "compare_string": [ "psi_dazed", { "context_val": "effect" } ] },
+            { "compare_string": [ "psi_dazed_zap", { "context_val": "effect" } ] },
+            { "compare_string": [ "downed", { "context_val": "effect" } ] },
+            { "compare_string": [ "venom_weaken", { "context_val": "effect" } ] },
+            { "compare_string": [ "migo_atmosphere", { "context_val": "effect" } ] }
+          ]
+        }
+      ]
+    },
+    "effect": [
+      { 
+        "run_eocs": [ 
+          {
+            "id": "anime_esper_powers_check_end_eoc",
+            "condition": { "x_in_y_chance": { "x": 1, "y": 6 } },
+            "effect": [ 
+              { "math": [ "var_esper_stopped", "+=", "1" ] },
+              { "math": [ "var_esper_accelerator_stopped", "+=", "1" ] }
+            ]
+          }
+        ] 
+      }
+    ],
+    "//": "Based on EOC_PSIONICS_CONCENTRATION_EFFECT_GAIN_CHECK from MoM",
+    "//2": "Because Standing-Storm and me use different systems to keep 'maintained'/'concentration' stuff, this had to be adapted accordingly"
+  },
+  {
+    "id": "anime_esper_powers_end_1_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": {
+      "or": [
+        { "compare_string": [ "effect_psi_neutralized", { "context_val": "effect" } ] },
+        { "compare_string": [ "effect_psi_turn_off_powers", { "context_val": "effect" } ] },
+        { "compare_string": [ "sleep", { "context_val": "effect" } ] },
+        { "compare_string": [ "lying_down", { "context_val": "effect" } ] },
+        { "compare_string": [ "weary_8", { "context_val": "effect" } ] },
+        { "compare_string": [ "brainworms", { "context_val": "effect" } ] },
+        { "compare_string": [ "pd_int_bad", { "context_val": "effect" } ] }
+      ]
+    },
+    "effect": [
+      { "math": [ "var_esper_stopped", "+=", "1" ] }
+    ],
+    "//": "Based on EOC_PSIONICS_X_ENDS_POWERS , EOC_END_PSI_POWERS and EOC_END_PSI_POWERS_MAINTAINED from MoM",
+    "//2": "Because Standing-Storm and me use different systems to keep 'maintained'/'concentration' stuff, this had to be adapted accordingly"
+  },
+  {
+    "id": "anime_esper_powers_end_2_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": {
+      "or": [
+        { "compare_string": [ "effect_psi_neutralized", { "context_val": "effect" } ] },
+        { "compare_string": [ "effect_psi_turn_off_powers", { "context_val": "effect" } ] },
+        { "compare_string": [ "sleep", { "context_val": "effect" } ] },
+        { "compare_string": [ "lying_down", { "context_val": "effect" } ] },
+        { "compare_string": [ "weary_8", { "context_val": "effect" } ] },
+        { "compare_string": [ "brainworms", { "context_val": "effect" } ] },
+        { "compare_string": [ "emp", { "context_val": "effect" } ] },
+        { "compare_string": [ "supercharged", { "context_val": "effect" } ] }
+      ]
+    },
+    "effect": [
+      { "math": [ "var_esper_accelerator_stopped", "+=", "1" ] }
+    ],
+    "//": "Specific to Accelerator. He's able to understand magic and dark matter so the portal storm line does not apply to him",
+    "//2": "On the other hand, EMPs and external things like that jam the signal to the Network"
+  },
+  {
+    "id": "anime_flight_mikoto_gain_effect",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": { "compare_string": [ "anime_flight_mikoto_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { "math": [ "u_spell_level('fly_upwards')", "=", "1" ] },
+      { "math": [ "u_spell_level('fly_downwards')", "=", "1" ] } 
+    ]
+  },
+  {
+    "id": "anime_flight_mikoto_lose_effect",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_loses_effect",
+    "condition": { "compare_string": [ "anime_flight_mikoto_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { "math": [ "u_spell_level('fly_upwards')", "=", "-1" ] },
+      { "math": [ "u_spell_level('fly_downwards')", "=", "-1" ] } 
+    ]
+  },
+  {
+    "id": "kage_bunshin_owner_eoc",
+    "type": "effect_on_condition",
+    "//eoc_type": "EVENT",
+    "//required_event": "spellcasting_finish",
+    "condition": { "compare_string": [ "kage_bunshin_no_jutsu", { "context_val": "spell" } ] },
+    "effect": [ 
+      { "message": "<context_val:character> CHARACTER_ID <context_val:spell>", "type": "mixed" },
+      { "set_string_var": { "context_val": "character" }, "target_var": { "global_val": "var_kage_bunshin_owner" } },
+      { "message": "<context_val:character> CHARACTER_ID <global_val:var_kage_bunshin_owner>", "type": "mixed" },
+      { "math": [ "u_var_kage_bunshin", "+=", "1" ] }
+    ],
+    "//": "Not used anywhere; for debugging character ID. Trying to pull character_id seems bugged? Returns 1 instead of the id"
+  },
+  {
+    "id": "iron_sand_manipulation_gain_effect",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": { "compare_string": [ "iron_sand_manipulation_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { "math": [ "u_spell_level('iron_sand_manipulation_sword')", "=", "1" ] },
+      { "math": [ "u_spell_level('iron_sand_manipulation_whip')", "=", "1" ] } 
+    ]
+  },
+  {
+    "id": "iron_sand_manipulation_lose_effect",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_loses_effect",
+    "condition": { "compare_string": [ "iron_sand_manipulation_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { "math": [ "u_spell_level('iron_sand_manipulation_sword')", "=", "-1" ] },
+      { "math": [ "u_spell_level('iron_sand_manipulation_whip')", "=", "-1" ] },
+      {
+        "u_run_inv_eocs": "all",
+        "search_data": [ { "flags":  [ "IRON_SAND_WEAPON" ] } ],
+        "true_eocs": [
+          {
+            "id": "iron_sand_manipulation_delete_weapon_eoc",
+            "effect": [ "npc_die" ]
+          }
+        ]
+      },
+      { "u_location_variable": { "global_val": "var_iron_sand_loc" } },
+      {
+        "u_map_run_item_eocs": "all",
+        "search_data": [ { "flags":  [ "IRON_SAND_WEAPON" ] } ],
+        "loc": { "global_val": "var_iron_sand_loc" },
+        "min_radius": 0,
+        "max_radius": 64,
+        "true_eocs": [ 
+          {
+            "id": "iron_sand_manipulation_delete_weapon_again_eoc",
+            "effect": [ { "run_eocs": [ "iron_sand_manipulation_delete_weapon_eoc" ] } ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ninjutsu_fuuton_casted_eoc",
+    "type": "effect_on_condition",
+    "//eoc_type": "EVENT",
+    "//required_event": "spellcasting_finish",
+    "condition": {
+      "or": [
+        { "compare_string": [ "fuuton_atsugai", { "context_val": "spell" } ] },
+        { "compare_string": [ "fuuton_shinkuu_dama", { "context_val": "spell" } ] }
+      ]
+    },
+    "effect": [ 
+      { "math": [ "var_fuuton_casted", "+=", "1" ] },
+      { "run_eocs": [ "ninjutsu_fuuton_reset_eoc" ], "time_in_future": 125 }
+    ],
+    "//": "Not used anywhere; for reference only"
+  },
+  {
+    "id": "ninjutsu_fuuton_reset_eoc",
+    "type": "effect_on_condition",
+    "effect": [ { "math": [ "var_fuuton_casted", "=", "0" ] } ]
+  },
+  {
+    "id": "kakuzu_death",
+    "type": "effect_on_condition",
+    "eoc_type": "PREVENT_DEATH",
+    "condition": {
+      "and": [
+        { "u_has_trait": "PROF_KAKUZU" },
+        {
+          "or": [
+            { "u_has_trait": "KAKUZU_HEART_2" },
+            { "u_has_trait": "KAKUZU_HEART_3" },
+            { "u_has_trait": "KAKUZU_HEART_4" },
+            { "u_has_trait": "KAKUZU_HEART_5" }
+          ]
+        }
+      ]
+    },
+    "effect": [
+      "u_prevent_death",
+      { "math": [ "u_hp('ALL')", "=", "100" ] },
+      { "math": [ "u_val('sleepiness')", "=", "0" ] },
+      { "math": [ "u_val('mana')", "+=", "200" ] },
+      { "math": [ "u_val('stamina')", "=", "8500" ] },
+      { "math": [ "u_pain()", "=", "0" ] },
+      { "math": [ "var_kakuzu_heart", "=", "rand(4)" ] },
+      { "run_eocs": [ "kakuzu_death_heart_repeater" ] }
+    ]
+  },
+  {
+    "id": "kakuzu_death_heart_repeater",
+    "type": "effect_on_condition",
+    "effect": [ 
+      {
+        "weighted_list_eocs": [
+          [ "kakuzu_death_heart_check_2", 1 ],
+          [ "kakuzu_death_heart_check_3", 1 ],
+          [ "kakuzu_death_heart_check_4", 1 ],
+          [ "kakuzu_death_heart_check_5", 1 ]
+        ]
+      }
+    ],
+    "//": "Based on kasen_summon_pet_eoc ",
+    "//2": "This is a repeater to randomly run one of four 'check if this heart is present, if it is then break it, if it's not missing re-run the repeater'",
+    "//3": "The condition for 'at least one non-Earth heart is present' is set at the previous EOC",
+    "//4": "The spells have to be manually removed because losing the mutation does not remove the spell. The alternative is to add each mask as spell_class, but that's too much clutter"
+  },
+  {
+    "id": "kakuzu_death_heart_check_2",
+    "type": "effect_on_condition",
+    "condition": { "u_has_trait": "KAKUZU_HEART_2" },
+    "effect": [ 
+      { "u_lose_trait": "KAKUZU_HEART_2" },
+      { "math": [ "u_spell_level('katon_endan')", "=", "-1" ] },
+      { "math": [ "u_spell_level('katon_zukokku')", "=", "-1" ] },
+      { "math": [ "u_ninja_mask_number", "-=", "1" ] },
+      { "u_message": "Your <color_red>Fire</color> mask shatters!", "type": "mixed" }
+    ],
+    "false_effect": [ { "run_eocs": [ "kakuzu_death_heart_repeater" ] } ]
+  },
+  {
+    "id": "kakuzu_death_heart_check_3",
+    "type": "effect_on_condition",
+    "condition": { "u_has_trait": "KAKUZU_HEART_3" },
+    "effect": [ 
+      { "u_lose_trait": "KAKUZU_HEART_3" },
+      { "math": [ "u_spell_level('raiton_gian')", "=", "-1" ] },
+      { "math": [ "u_ninja_mask_number", "-=", "1" ] },
+      { "u_message": "Your <color_yellow>Lightning</color> mask shatters!", "type": "mixed" }
+    ],
+    "false_effect": [ { "run_eocs": [ "kakuzu_death_heart_repeater" ] } ]
+  },
+  {
+    "id": "kakuzu_death_heart_check_4",
+    "type": "effect_on_condition",
+    "condition": { "u_has_trait": "KAKUZU_HEART_4" },
+    "effect": [ 
+      { "u_lose_trait": "KAKUZU_HEART_4" },
+      { "math": [ "u_spell_level('suiton_mizu_bushin_no_jutsu')", "=", "-1" ] },
+      { "math": [ "u_ninja_mask_number", "-=", "1" ] },
+      { "u_message": "Your <color_light_blue>Water</color> mask shatters!", "type": "mixed" }
+    ],
+    "false_effect": [ { "run_eocs": [ "kakuzu_death_heart_repeater" ] } ]
+  },
+  {
+    "id": "kakuzu_death_heart_check_5",
+    "type": "effect_on_condition",
+    "condition": { "u_has_trait": "KAKUZU_HEART_5" },
+    "effect": [ 
+      { "u_lose_trait": "KAKUZU_HEART_5" },
+      { "math": [ "u_spell_level('fuuton_atsugai')", "=", "-1" ] },
+      { "math": [ "u_spell_level('fuuton_shinkuu_dama')", "=", "-1" ] },
+      { "math": [ "u_ninja_mask_number", "-=", "1" ] },
+      { "u_message": "Your <color_white>Wind</color> mask shatters!", "type": "mixed" }
+    ],
+    "false_effect": [ { "run_eocs": [ "kakuzu_death_heart_repeater" ] } ]
+  },
+  {
+    "id": "kakuzu_thread_heart_kill_monster_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_kills_monster",
+    "condition": {
+      "and": [
+        { "u_has_trait": "PROF_KAKUZU" },
+        { "npc_has_effect": "kakuzu_thread_heart_effect" }
+      ]
+    },
+    "effect": [
+      { "run_eocs": [ "kakuzu_thread_heart_kill_monster_check_eoc" ] }
+    ],
+    "//": "This checks if whatever Kakuzu killed had the HEART_effect, applied by the kakuzu_thread_heart2 spell",
+    "//2": "This runs for ALL characters, checking the condition. Thus, this can't have false_effect (will always run for them), the actual EOC for Kakuzu has to be nested"
+  },
+  {
+    "id": "kakuzu_thread_heart_kill_monster_check_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "( 5 - u_ninja_mask_number )", ">=", "rand(5)" ] },
+    "effect": [
+      {
+        "u_roll_remainder": [ "KAKUZU_HEART_2", "KAKUZU_HEART_3", "KAKUZU_HEART_4", "KAKUZU_HEART_5" ], "type": "mutation",
+        "true_eocs": [ 
+          {
+            "id": "kakuzu_thread_heart_add_eoc",
+            "effect": [ 
+              { "math": [ "u_ninja_mask_number", "+=", "1" ] },
+              { "u_message": "You collect the heart, restoring a mask.", "type": "mixed" } 
+            ]
+          }
+        ],
+        "false_eocs": [ 
+          {
+            "id": "kakuzu_thread_heart_false_eoc",
+            "effect": [ { "u_message": "You already have a heart of each nature.  Oh well.", "type": "mixed" } ]
+          }
+        ]
+      }
+    ],
+    "false_effect": [ { "u_message": "That heart has an elemental type you already have.  You discard it.", "type": "mixed" } ],
+    "//": "",
+    "//2": "To model elemental distribution in the population (20% for each element), an additional condition checks ( 1 - 4 ) present hearts give ( 80 - 20% ) chance to restore a missing heart",
+    "//3": "Then, it checks which heart is missing and adds it. The spells granted by each heart are automatically re-learned once the trait is gained",
+    "//note": "Wouldn't it be fun if he gets random elemental jutsu according to the hearts he snatches, so he can 'refresh' jutsu by 'resetting' the hearts"
+  },
+  {
+    "id": "mikoto_mood_spellcast_finish_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "spellcasting_finish",
+    "condition": {
+      "and": [
+        { "u_has_trait": "PROF_MIKOTO" },
+        { "u_has_effect": "mikoto_mood_effect" },
+        {
+          "or": [
+            { "compare_string": [ "mikoto_emp2", { "context_val": "spell" } ] },
+            { "compare_string": [ "mikoto_electromagnetism", { "context_val": "spell" } ] },
+            { "compare_string": [ "lightning_spear", { "context_val": "spell" } ] },
+            { "compare_string": [ "railgun_5_spell2", { "context_val": "spell" } ] }
+          ]
+        }
+      ]
+    },
+    "effect": [
+      { "run_eocs": [ "mikoto_mood_spellcast_cast_eoc" ] }
+    ],
+    "//": "If Misaka is in a bad mood, she has a chance to automatically cast a lesser EMP after casting her spells"
+  },
+  {
+    "id": "mikoto_mood_spellcast_cast_eoc",
+    "type": "effect_on_condition",
+    "effect": [ { "u_cast_spell": { "id": "mikoto_emp3" }, "targeted": false } ],
+    "//": "This is split so it can be called from somewhere else"
+  },
+  {
+    "id": "sharingan_gain_effect_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": { "compare_string": [ "sharingan_base_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { 
+        "run_eocs": [ 
+          {
+            "id": "sharingan_gain_effect_itachi_eoc",
+            "condition": { "u_has_trait": "PROF_ITACHI" },
+            "effect": [
+              { "math": [ "u_spell_level('sharingan_genjutsu')", "=", "1" ] } 
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "sharingan_check_effect_kakashi_eoc",
+            "condition": { "u_has_trait": "PROF_KAKASHI" },
+            "effect": [
+              { "math": [ "u_spell_level('sharingan_genjutsu')", "=", "1" ] } 
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "sharingan_check_effect_sasuke_eoc",
+            "condition": { "u_has_trait": "PROF_SASUKE" },
+            "effect": [
+              { "math": [ "u_spell_level('sharingan_genjutsu')", "=", "1" ] } 
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "mangekyou_gain_effect_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_gains_effect",
+    "condition": { "compare_string": [ "mangekyou_base_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_gain_effect_itachi_eoc",
+            "condition": { "u_has_trait": "PROF_ITACHI" },
+            "effect": [
+              { "math": [ "u_spell_level('mangekyou_amaterasu')", "=", "1" ] }, 
+              { "math": [ "u_spell_level('mangekyou_susanoo_defensive')", "=", "1" ] }, 
+              { "math": [ "u_spell_level('mangekyou_tsukuyomi')", "=", "1" ] } 
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_check_kakashi_eoc",
+            "condition": { "u_has_trait": "PROF_KAKASHI" },
+            "effect": [
+              { "math": [ "u_spell_level('mangekyou_kamui_kakashi')", "=", "1" ] } 
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_check_sasuke_eoc",
+            "condition": { "u_has_trait": "PROF_SASUKE" },
+            "effect": [
+              { "math": [ "u_spell_level('mangekyou_amaterasu')", "=", "1" ] }, 
+              { "math": [ "u_spell_level('mangekyou_susanoo_defensive')", "=", "1" ] } 
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sharingan_lose_effect_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_loses_effect",
+    "condition": { "compare_string": [ "sharingan_base_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { "u_lose_effect": "sharingan_itachi_effect" },
+      { "math": [ "u_spell_level('sharingan_genjutsu')", "=", "-1" ] } 
+    ]
+  },
+  {
+    "id": "mangekyou_lose_effect_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_loses_effect",
+    "condition": { "compare_string": [ "mangekyou_base_effect", { "context_val": "effect" } ] },
+    "effect": [
+      { "u_lose_effect": "mangekyou_susanoo_defense_effect" },
+      { "math": [ "u_spell_level('mangekyou_amaterasu')", "=", "-1" ] }, 
+      { "math": [ "u_spell_level('mangekyou_susanoo_defensive')", "=", "-1" ] }, 
+      { "math": [ "u_spell_level('mangekyou_tsukuyomi')", "=", "-1" ] } 
+    ]
+  },
+  {
+    "id": "mangekyou_susanoo_defense_game_load",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "game_load",
+    "condition": { "u_has_effect": "mangekyou_susanoo_defense" },
+    "effect": [
+      { "math": [ "var_susanoo_defensive", "=", "0" ] },
+      { "u_lose_effect": "mangekyou_susanoo_defense" }
+    ]
+  },
+  {
+    "id": "mangekyou_susanoo_defense_sleep",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_falls_asleep",
+    "condition": { "u_has_effect": "mangekyou_susanoo_defense" },
+    "effect": [
+      { "math": [ "var_susanoo_defensive", "=", "0" ] },
+      { "u_lose_effect": "mangekyou_susanoo_defense" }
+    ]
+  },
+  {
+    "id": "worst_pain_eoc",
+    "type": "effect_on_condition",
+    "eoc_type": "EVENT",
+    "required_event": "character_takes_damage",
+    "condition": {
+      "and": [
+        { "u_has_trait": "PROF_WORST" },
+        { "math": [ "u_pain()", ">", "30" ] },
+        { "not": { "u_has_effect": "worst_mood_effect" } }
+      ]
+    },
+    "effect": [ 
+      { "u_add_effect": "worst_mood_effect", "duration": { "math": [ "1 + rand(4)" ] } },
+      { "math": [ "u_pain()", "=", "30" ] } 
+    ]
+  }
+]

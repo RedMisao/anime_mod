@@ -1,0 +1,22 @@
+[
+  {
+    "id": "targeting_system_f2000r",
+    "type": "GUNMOD",
+    "name": { "str": "F2000R automatic targeting system" },
+    "description": "A built-in, automated targeting system for the Toy Soldier.  It automatically locks on the target and calculates environmental variables between them and the user, greatly reducing the necessity of manual adjustments.",
+    "volume": "200 ml",
+    "weight": "200 g",
+    "integral_volume": "0 ml",
+    "integral_longest_side": "0 cm",
+    "price_postapoc": 750,
+    "material": [ "plastic" ],
+    "symbol": ":",
+    "color": "black",
+    "aim_speed_modifier": -15,
+    "dispersion_modifier": -60,
+    "install_time": "6 s",
+    "location": "sights",
+    "min_skills": [ [ "weapon", 8 ] ],
+    "mod_targets": [ "rifle" ]
+  }
+]

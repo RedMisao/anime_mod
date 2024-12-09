@@ -1,0 +1,256 @@
+[
+  {
+    "id": "itachi_uchiha",
+    "type": "profession",
+    "name": "Uchiha Itachi",
+    "description": "<color_light_gray>Member of <color_red>A</color><color_dark_gray>katsuki</color>.</color>",
+    "points": 4,
+    "skills": [ 
+      { "level": 8, "name": "dodge" }, 
+      { "level": 2, "name": "firstaid" }, 
+      { "level": 8, "name": "melee" }, 
+      { "level": 8, "name": "unarmed" } 
+    ],
+    "spells": [
+      { "level": 1, "id": "shunshin_no_jutsu" },
+      { "level": 1, "id": "kawarimi_no_jutsu" },
+      { "level": 1, "id": "stance_ninja_taijutsu" },
+      { "level": 1, "id": "kage_bunshin_no_jutsu" },
+      { "level": 1, "id": "karasu_bushin_no_jutsu" },
+      { "level": 1, "id": "katon_goukakyuu" },
+      { "level": 1, "id": "katon_housenka" }
+    ],
+    "traits": [ "SHARINGAN", "TAIJUTSU_JOUNIN", "PROF_ITACHI", "NINJA" ],
+    "items": {
+      "both": {
+        "entries": [
+          { "item": "akatsuki_ring", "variant": "akatsuki_ring_itachi" },
+          { "item": "akatsuki_robe" },
+          { "item": "akatsuki_sandals" },
+          { "item": "ninja_vest" },
+          { "item": "straw_hat" },
+          { "item": "tanto", "container-item": "sheath" },
+          { "item": "trousers_ninja" }
+        ]
+      },
+      "male": [ "boxer_shorts" ],
+      "female": [ "bra", "panties" ]
+    },
+    "flags": [ "SCEN_ONLY" ],
+    "//WIP3": "Water Release: Water Fang Bullet shoots one monster -> spike, usable near water and creates three monsters"
+  },
+  {
+    "id": "kakuzu",
+    "type": "profession",
+    "name": "Kakuzu",
+    "description": "<color_light_gray>Member of <color_red>A</color><color_dark_gray>katsuki</color>.</color>",
+    "points": 4,
+    "skills": [ 
+      { "level": 8, "name": "dodge" }, 
+      { "level": 6, "name": "firstaid" }, 
+      { "level": 6, "name": "melee" }, 
+      { "level": 8, "name": "unarmed" } 
+    ],
+    "spells": [
+      { "level": 1, "id": "shunshin_no_jutsu" },
+      { "level": 1, "id": "kawarimi_no_jutsu" },
+      { "level": 1, "id": "stance_ninja_taijutsu" },
+      { "level": 1, "id": "kakuzu_thread_heart" },
+      { "level": 1, "id": "kakuzu_thread_heal" },
+      { "level": 1, "id": "kakuzu_thread_needles" },
+      { "level": 1, "id": "kakuzu_thread_needles2" },
+      { "level": 1, "id": "kakuzu_thread_pull" }
+    ],
+    "traits": [ "KILLER", "KAKUZU_HEART_1", "KAKUZU_HEART_2", "KAKUZU_HEART_3", "KAKUZU_HEART_4", "KAKUZU_HEART_5", "KAKUZU_MOOD_1", "TAIJUTSU_KAGE", "PROF_KAKUZU", "NINJA" ],
+    "items": {
+      "both": {
+        "entries": [
+          { "item": "akatsuki_ring", "variant": "akatsuki_ring_kakuzu" },
+          { "item": "akatsuki_robe" },
+          { "item": "akatsuki_sandals" },
+          { "item": "ninja_vest" },
+          { "item": "mask_dust", "variant": "black_mask_dust" },
+          { "item": "straw_hat" },
+          { "item": "trousers_ninja" }
+        ]
+      },
+      "male": [ "boxer_shorts" ],
+      "female": [ "bra", "panties" ]
+    },
+    "flags": [ "SCEN_ONLY" ],
+    "//note": "Missing a kakuzu_thread_entangle spell but I'm not sure how to implement it. Should stun at a distance, up to two targets, while disabling one or two arms as long as it's active, slam it to a target location, etc"
+  },
+  {
+    "id": "mikoto_misaka",
+    "type": "profession",
+    "name": "Misaka Mikoto",
+    "description": "<color_light_gray>Ace of Tokiwadai.</color>",
+    "points": 4,
+    "proficiencies": [ "prof_concentration_basic", "prof_concentration_intermediate", "prof_concentration_master" ],
+    "skills": [ 
+      { "level": 2, "name": "chemistry" }, 
+      { "level": 10, "name": "computer" }, 
+      { "level": 4, "name": "dodge" }, 
+      { "level": 4, "name": "electronics" }, 
+      { "level": 4, "name": "swimming" } 
+    ],
+    "//": "Her hacking is bs-tier bruteforcing hardware, regardless of software",
+    "spells": [
+      { "level": 1, "id": "mikoto_wings" },
+      { "level": 1, "id": "mikoto_electromagnetism" },
+      { "level": 1, "id": "mikoto_emp" },
+      { "level": 1, "id": "mikoto_lightning_spear" },
+      { "level": 1, "id": "iron_sand_manipulation" },
+      { "level": 1, "id": "railgun_5_spell" }
+    ],
+    "traits": [ "ELECTROMASTER_5", "MIKOTO_MOOD_1", "PROF_MIKOTO", "ESPER" ],
+    "items": {
+      "both": {
+        "entries": [
+          { "item": "dress_shirt" },
+          { "item": "dress_shoes" },
+          { "group": "mikoto_coins" },
+          { "item": "stockings" },
+          { "item": "tokiwadai_blazer" },
+          { "item": "tokiwadai_skirt" }
+        ]
+      },
+      "male": { "entries": [ { "item": "boxer_shorts", "variant": "generic_boxer_shorts" } ] },
+      "female": { 
+        "entries": [ 
+          { "item": "bra" },
+          { "item": "boxer_shorts", "variant": "generic_boxer_shorts" }
+        ] 
+      }
+    },
+    "flags": [ "SCEN_ONLY" ],
+    "//2": "Clothing items based on their winter uniform, given the game starts the first day of Spring",
+    "//WIP": "Add 'fear of insects' mood"
+  },
+  {
+    "id": "mikoto_coins",
+    "type": "item_group",
+    "subtype": "collection",
+    "items": [
+      { "item": "coin_quarter", "prob": 33, "count": [ 0, 5 ] },
+      { "item": "coin_half_dollar", "prob": 33, "count": [ 0, 5 ] },
+      { "item": "coin_dollar", "prob": 33, "count": [ 0, 5 ] }
+    ]
+  },
+  {
+    "id": "worst_misaka",
+    "type": "profession",
+    "name": "Worst",
+    "description": "<color_light_gray>Third Season, replacement of the <color_dark_gray>Radio Noise Project</color>.</color>",
+    "points": 4,
+    "proficiencies": [ "prof_concentration_basic", "prof_concentration_intermediate", "prof_concentration_master" ],
+    "skills": [ 
+      { "level": 2, "name": "computer" }, 
+      { "level": 2, "name": "dodge" }, 
+      { "level": 1, "name": "electronics" }, 
+      { "level": 1, "name": "gun" }, 
+      { "level": 1, "name": "rifle" }, 
+      { "level": 1, "name": "smg" }, 
+      { "level": 3, "name": "swimming" }, 
+      { "level": 1, "name": "traps" } 
+    ],
+    "//": "Computers because she can make use of her ability to hack, the other skills are because she shares a connection to the Network, but virtually never uses/practices, except for swimming/athletics",
+    "spells": [
+      { "level": 1, "id": "air_burst_electric" },
+      { "level": 1, "id": "worst_emp" },
+      { "level": 1, "id": "worst_lightning_spear" },
+      { "level": 1, "id": "railgun_4_spell" }
+    ],
+    "traits": [ "ELECTROMASTER_4", "WORST_MOOD_1", "PROF_WORST", "ESPER" ],
+    "items": {
+      "both": {
+        "entries": [
+          { "item": "worst_harness" },
+          { "item": "worst_mask" },
+          { "group": "worst_nails" },
+          { "item": "worst_suit" }
+        ]
+      },
+      "male": [ "boxer_shorts" ],
+      "female": [ "bra", "boxer_shorts" ]
+    },
+    "flags": [ "SCEN_ONLY" ],
+    "//2": "Worst has a passive morale reduction, handled by the WORST_MOOD_1 , and passive pain reduction, handled by worst_pain_eoc "
+  },
+  {
+    "id": "worst_nails",
+    "type": "item_group",
+    "subtype": "distribution",
+    "items": [
+      { "item": "nail", "prob": 33, "charges": [ 3, 11 ] }
+    ]
+  },
+  {
+    "id": "sister_misaka",
+    "type": "profession",
+    "name": "MISAKA",
+    "description": "<color_light_gray><color_dark_gray>Radio Noise Project</color>.</color>",
+    "points": 4,
+    "proficiencies": [ "prof_concentration_basic", "prof_concentration_intermediate", "prof_concentration_master" ],
+    "skills": [ 
+      { "level": 2, "name": "dodge" }, 
+      { "level": 2, "name": "electronics" }, 
+      { "level": 4, "name": "gun" }, 
+      { "level": 4, "name": "rifle" }, 
+      { "level": 4, "name": "smg" }, 
+      { "level": 2, "name": "swimming" }, 
+      { "level": 4, "name": "traps" } 
+    ],
+    "spells": [  ],
+    "traits": [ "ELECTROMASTER_RADIO_NOISE", "MISAKA_MOOD_1", "PROF_MISAKA", "ESPER" ],
+    "items": {
+      "both": {
+        "entries": [
+          { "item": "dress_shirt" },
+          { "item": "dress_shoes" },
+          { "item": "misaka_nvg" },
+          { "item": "stockings" },
+          { "item": "tokiwadai_blazer" },
+          { "item": "tokiwadai_skirt" }
+        ]
+      },
+      "male": [ "boxer_shorts" ],
+      "female": [ "bra", "boxer_shorts" ]
+    },
+    "flags": [ "SCEN_ONLY" ],
+    "//": "Her stats, level and weapons, are randomized at game start"
+  },
+  {
+    "id": "misaka_guns",
+    "type": "item_group",
+    "subtype": "distribution",
+    "entries": [
+      { "group": "nested_f2000r", "prob": 0 },
+      { "group": "nested_metal_eater_mx", "prob": 100 }
+    ]
+  },
+  {
+    "id": "nested_f2000r",
+    "type": "item_group",
+    "subtype": "collection",
+    "entries": [ 
+      { "item": "f2000r", "ammo-item": "556", "charges": 30, "contents-item": "shoulder_strap" }, 
+      { "item": "legpouch_large", "contents-group": "army_mags_m4" }
+    ]
+  },
+  {
+    "id": "nested_metal_eater_mx",
+    "type": "item_group",
+    "subtype": "collection",
+    "entries": [ 
+      { "item": "metal_eater_mx", "ammo-item": "50bmg", "charges": 10, "contents-item": "shoulder_strap" },
+      { "item": "ammo_satchel", "contents-group": "misaka_mags_50bmg" }
+    ]
+  },
+  {
+    "id": "misaka_mags_50bmg",
+    "type": "item_group",
+    "subtype": "collection",
+    "entries": [ { "item": "m107a1mag", "ammo-item": "50bmg", "charges": 10 } ]
+  }
+]

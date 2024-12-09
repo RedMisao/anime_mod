@@ -1,0 +1,973 @@
+[
+  {
+    "id": "kage_bunshin_no_jutsu_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "math": [ "u_var_kage_bunshin", "+=", "1" ] }
+    ]
+  },
+  {
+    "id": "stance_ninja_taijutsu_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_stance_ninja_taijutsu", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_stance_ninja_taijutsu", "=", "1" ] },
+      { "run_eocs": [ "stance_ninja_taijutsu_start_eoc" ] }
+    ],
+    "false_effect": [ { "run_eocs": "stance_ninja_toggle_eoc" } ],
+    "//": "Alternate version of udonge_waveinsight_start ",
+    "//2": "This checks the var_TAIJUTSU_STANCE is active. If its not already running, it runs the START_eoc ",
+    "//3": "If var_TAIJUTSU_STANCE is active, it runs the TOGGLE_eoc ",
+    "//IMPORTANT": "Apparently solves the double stop issue of the base aura!"
+  },
+  {
+    "id": "stance_ninja_taijutsu_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "30" ] },
+    "effect": [ 
+      { "math": [ "u_val('mana')", "-=", "30" ] },
+      { "run_eocs": [ "stance_ninja_taijutsu_cycle_1" ] }
+    ],
+    "false_effect": [
+      { "u_message": "You don't have enough chakra!", "type": "bad" },
+      { "math": [ "var_stance_ninja_taijutsu", "=", "0" ] },
+      { "u_lose_effect": "stance_ninja_taijutsu_effect" }
+    ],
+    "//": "The cost check is run after the activation_EOC , so it can be toggled ON and OFF with no cost",
+    "//2": "The spell says it costs +2 mana. The difference is because the effect is granted while cycling once, which consumes that amount",
+    "//3": "The false_effect doesn't run the OOM_eoc as the messages are different"
+  },
+  {
+    "id": "stance_ninja_taijutsu_cycle_1",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_stance_ninja_taijutsu", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "stance_ninja_taijutsu_cycle_2" ] } ],
+    "//": "This re-checks if var_TAIJUTSU_STANCE is already active, if so it runs the next EOC",
+    "//IMPORTANT": "No false_effect here because the toggle is handled upstream. Adding a(ny) false effect results in duplicating the message"
+  },
+  {
+    "id": "stance_ninja_taijutsu_cycle_2",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "3" ] },
+    "effect": [
+      { "math": [ "u_val('mana')", "-=", "3" ] },
+      { "u_add_effect": "stance_ninja_taijutsu_effect", "duration": "4 s" },
+      { "run_eocs": [ "stance_ninja_taijutsu_cycle_1" ], "time_in_future": "3 s" }
+    ],
+    "false_effect": [ { "run_eocs": "stance_oom_eoc" } ],
+    "//": "This checks if there's enough mana to keep var_TAIJUTSU_STANCE active, if so it drains mana and cycles back",
+    "//2": "Otherwise it runs OOM_eoc "
+  },
+  {
+    "id": "stance_ninja_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You switch your stance.", "type": "mixed" },
+      { "math": [ "var_stance_ninja_taijutsu", "=", "0" ] },
+      { "u_lose_effect": "stance_ninja_taijutsu_effect" }
+    ]
+  },
+  {
+    "id": "stance_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "Your chakra reserves are depleted!", "type": "bad" },
+      { "math": [ "var_stance_ninja_taijutsu", "=", "0" ] },
+      { "u_lose_effect": "stance_ninja_taijutsu_effect" }
+    ]
+  },
+  {
+    "id": "doton_domu_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_doton_domu", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_doton_domu", "=", "1" ] },
+      { 
+        "run_eocs": [ "doton_domu_start_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 0.5 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ), ( 0.5 ) )" 
+          ] 
+        } 
+      }
+    ],
+    "false_effect": [ { "run_eocs": "doton_domu_toggle_eoc" } ],
+    "//": "Based on stance_ninja_taijutsu_eoc . The queue time represents the time between starting the first seal to when the jutsu is actually visible and doing something",
+    "//formula_1": "First factor equals numbers of seals for the jutsu (1 seal = 0.5 s)",
+    "//formula_2": "Second factor is hand_seal skill multiplier (1 = all seals are used aka no improvement, 5 = half of the total seals can be skipped aka 50% reduction)",
+    "//formula_3": "Third factor is the 'speed' skill multiplier, similar math to above",
+    "//formula_4": "An additional 1 s delay is added for most 'breathe-in' ninjutsu. Not used here as Doton Domu seems instantaneous",
+    "//formula_5": "The whole thing is clamped between the absolute minimum time (set to 0.5 s + minimum delay seen in the anime, if any) and the absolute maximum time (x2)",
+    "//formula_6": "Minimum time is set arbitrarily to 1-seal ninjutsu because it looks cool",
+    "//formula_7": "Maximum time is arbitrary, just to allow clamping the value",
+    "//2": "For balancing (if one can call it that), the spell casting time/delay is applied here instead of at the spell's base_casting_time . This also enables combining ninjutsu for special cases"
+  },
+  {
+    "id": "sharingan_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_sharingan_active", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_sharingan_active", "=", "1" ] },
+      { "run_eocs": [ "sharingan_start_eoc" ] }
+    ],
+    "false_effect": [ { "run_eocs": "sharingan_toggle_eoc" } ],
+    "//": "Based on stance_ninja_taijutsu_eoc ",
+    "//2": "Each character-specific sharingan-granted abilities are handled by sharingan_gain_effect_eoc "
+  },
+  {
+    "id": "sharingan_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "25" ] },
+    "effect": [ 
+      { "math": [ "u_val('mana')", "-=", "25" ] },
+      { "u_add_trait": "SHARINGAN_MANGEKYOU" },
+      { "run_eocs": [ "sharingan_cycle_1_eoc" ] }
+    ],
+    "false_effect": [
+      { "u_message": "You don't have enough chakra!", "type": "bad" },
+      { "run_eocs": [ "sharingan_deactivate_eoc" ] }
+    ]
+  },
+  {
+    "id": "sharingan_cycle_1_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_sharingan_active", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "sharingan_cycle_2_eoc" ] } ]
+  },
+  {
+    "id": "sharingan_cycle_2_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_mangekyou_active", "==", "0" ] },
+    "effect": [ { "run_eocs": [ "sharingan_cycle_3_eoc" ] } ],
+    "false_effect": [ { "run_eocs": "mangekyou_cycle_3_eoc" } ]
+  },
+  {
+    "id": "sharingan_cycle_3_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "25" ] },
+    "effect": [
+      { "u_add_effect": "sharingan_base_effect", "duration": "4 s" },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "sharingan_cycle_itachi_eoc",
+            "condition": { "u_has_trait": "PROF_ITACHI" },
+            "effect": [
+              { "u_add_effect": "sharingan_itachi_effect", "duration": "4 s" },
+              { "run_eocs": [ "sharingan_cycle_1_eoc" ], "time_in_future": "3 s" }
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "sharingan_cycle_kakashi_eoc",
+            "condition": { "u_has_trait": "PROF_KAKASHI" },
+            "effect": [
+              { "u_add_effect": "sharingan_itachi_effect", "duration": "4 s" },
+              { "run_eocs": [ "sharingan_cycle_1_eoc" ], "time_in_future": "3 s" }
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "sharingan_cycle_sasuke_eoc",
+            "condition": { "u_has_trait": "PROF_SASUKE" },
+            "effect": [
+              { "u_add_effect": "sharingan_itachi_effect", "duration": "4 s" },
+              { "run_eocs": [ "sharingan_cycle_1_eoc" ], "time_in_future": "3 s" }
+            ]
+          }
+        ]
+      }
+    ],
+    "false_effect": [ { "run_eocs": "sharingan_oom_eoc" } ],
+    "//": "Repeater for each sharingan user, better than repeating the whole cycles xN times"
+  },
+  {
+    "id": "mangekyou_cycle_3_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "25" ] },
+    "effect": [
+      { "math": [ "u_val('mana')", "-=", "3" ] },
+      { "u_add_effect": "sharingan_base_effect", "duration": "4 s" },
+      { "u_add_effect": "mangekyou_base_effect", "duration": "4 s" },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_cycle_itachi_eoc",
+            "condition": { "u_has_trait": "PROF_ITACHI" },
+            "effect": [
+              { "u_add_effect": "sharingan_itachi_effect", "duration": "4 s" },
+              { "run_eocs": [ "sharingan_cycle_1_eoc" ], "time_in_future": "3 s" }
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_cycle_kakashi_eoc",
+            "condition": { "u_has_trait": "PROF_KAKASHI" },
+            "effect": [
+              { "u_add_effect": "sharingan_itachi_effect", "duration": "4 s" },
+              { "run_eocs": [ "sharingan_cycle_1_eoc" ], "time_in_future": "3 s" }
+            ]
+          }
+        ]
+      },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_cycle_sasuke_eoc",
+            "condition": { "u_has_trait": "PROF_SASUKE" },
+            "effect": [
+              { "u_add_effect": "sharingan_itachi_effect", "duration": "4 s" },
+              { "run_eocs": [ "sharingan_cycle_1_eoc" ], "time_in_future": "3 s" }
+            ]
+          }
+        ]
+      }
+    ],
+    "false_effect": [ { "run_eocs": "sharingan_oom_eoc" } ],
+    "//": "Similar to sharingan_cycle_2_eoc , adds mana drain and the mangekyou effect"
+  },
+  {
+    "id": "sharingan_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You deactivate your <color_red>Sharingan</color>.", "type": "mixed" },
+      { "run_eocs": [ "sharingan_deactivate_eoc" ] }
+    ]
+  },
+  {
+    "id": "sharingan_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "Your <color_red>Sharingan</color> deactivates!", "type": "bad" },
+      { "run_eocs": [ "sharingan_deactivate_eoc" ] }
+    ]
+  },
+  {
+    "id": "sharingan_deactivate_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      { "u_lose_trait": "SHARINGAN_MANGEKYOU" },
+      { "math": [ "var_sharingan_active", "=", "0" ] },
+      { "u_lose_effect": "sharingan_base_effect" },
+      { "run_eocs": [ "mangekyou_deactivate_eoc" ] }
+    ],
+    "//": "Sharingan-granted abilities are handled by sharingan_lose_effect_eoc and mangekyou_lose_effect_eoc "
+  },
+  {
+    "id": "mangekyo_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_mangekyou_active", "==", "0" ] },
+    "effect": [ { "math": [ "var_mangekyou_active", "=", "1" ] } ],
+    "false_effect": [ { "run_eocs": "mangekyo_toggle_eoc" } ],
+    "//": "Used to check for mangekyou activation/deactivation by adding var_MANGEKYOU . The var is used as condition for each SHARINGAN_CHARACTER_cycle ",
+    "//2": "Each character-specific mangekyou-granted abilities are handled by mangekyou_gain_effect_eoc "
+  },
+  {
+    "id": "mangekyo_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "You deactivate your <color_red>Mangekyou Sharingan</color>.", "type": "mixed" },
+      { "run_eocs": [ "mangekyou_deactivate_eoc" ] }
+    ]
+  },
+  {
+    "id": "mangekyou_deactivate_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      { "math": [ "var_mangekyou_active", "=", "0" ] },
+      { "u_lose_effect": "mangekyou_base_effect" }
+    ],
+    "//": "Mangekyou-granted abilities are handled by mangekyou_lose_effect "
+  },
+  {
+    "id": "sharingan_genjutsu_eoc",
+    "type": "effect_on_condition",
+    "condition": { 
+      "and": [ 
+        { 
+          "or": [ 
+            { "u_has_species": "CYBORG" },
+            { "u_has_species": "FERAL" },
+            { "u_has_species": "HUMAN" },
+            { "u_has_flag": "HAS_MIND" }
+          ]
+        },
+        { "not": { "u_has_flag": "HIVE_MIND" } },
+        { "not": { "u_has_flag": "TEEP_IMMUNE" } },
+        { "not": { "u_has_flag": "TEEPSHIELD" } }
+      ]
+    },
+    "effect": [
+      { "npc_message": "The <u_name> is trapped by the Genjutsu!", "type": "mixed" },
+      { "math": [ "var_sharingan_genjutsu_duration", "=", "( 3000 + rand(3000) )" ] },
+      { "u_add_effect": "blind", "duration": { "math": [ "var_sharingan_genjutsu_duration" ] } },
+      { "u_cast_spell": { "id": "sharingan_genjutsu2", "hit_self": true } }
+    ],
+    "false_effect": [ 
+      { "npc_message": "The <u_name> cannot be affected by Genjutsu!", "type": "mixed" }
+    ],
+    "//": "This is run on the target of the spell, so u_ is the target and npc_ is Itachi",
+    "//2": "This checks if the target is a suitable species and if it's not psi immune, then forces itself to cast the stun"
+  },
+  {
+    "id": "mangekyou_susanoo_defensive_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_susanoo_defensive", "==", "0" ] },
+    "effect": [
+      { "math": [ "var_susanoo_defensive", "=", "1" ] },
+      { "run_eocs": [ "mangekyou_susanoo_defensive_start_eoc" ] }
+    ],
+    "false_effect": [ 
+      { "math": [ "var_susanoo_defensive", "=", "0" ] },
+      { "u_lose_effect": "mangekyou_susanoo_defense_effect" }
+    ],
+    "//": "Based on stance_ninja_taijutsu_eoc "
+  },
+  {
+    "id": "mangekyou_susanoo_defensive_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "250" ] },
+    "effect": [ 
+      { "u_add_effect": "mangekyou_susanoo_defense_effect", "duration": "PERMANENT" }
+    ],
+    "false_effect": [
+      { "math": [ "var_susanoo_defensive", "=", "0" ] },
+      { "u_message": "You don't have enough chakra!", "type": "bad" }
+    ]
+  },
+  {
+    "id": "mangekyou_tsukuyomi_eoc",
+    "type": "effect_on_condition",
+    "condition": { 
+      "and": [ 
+        { 
+          "or": [ 
+            { "u_has_species": "CYBORG" },
+            { "u_has_species": "FERAL" },
+            { "u_has_species": "HUMAN" },
+            { "u_has_flag": "HAS_MIND" }
+          ]
+        },
+        { "not": { "u_has_flag": "HIVE_MIND" } },
+        { "not": { "u_has_flag": "TEEP_IMMUNE" } },
+        { "not": { "u_has_flag": "TEEPSHIELD" } }
+      ]
+    },
+    "effect": [
+      { 
+        "run_eocs": [ 
+          {
+            "id": "mangekyou_tsukuyomi_start_eoc",
+            "condition": { "not": { "npc_has_effect": "tsukuyomi_effect" } },
+            "effect": [ 
+              { 
+                "run_eocs": [ 
+                  {
+                    "id": "mangekyou_tsukuyomi_cost_eoc",
+                    "condition": { "math": [ "u_val('mana')", ">=", "250" ] },
+                    "effect": [ 
+                      { "npc_add_effect": "tsukuyomi_effect", "duration": 60480000 },
+                      { "u_message": "The <npc_name> is trapped in Tsukuyomi!", "type": "mixed" }
+                    ],
+                    "false_effect": [ 
+                      { "u_message": "You don't have enough chakra!", "type": "bad" }
+                    ]
+                  }
+                ] 
+              }
+            ],
+            "false_effect": [ 
+              { "npc_lose_effect": "tsukuyomi_effect" },
+              { "u_message": "You lift the Tsukuyomi from <npc_name>!", "type": "mixed" }
+            ]
+          },
+          "alpha_talker": "u",
+          "beta_talker": "npc"
+        ] 
+      }
+    ],
+    "false_effect": [ 
+      { "npc_message": "The <u_name> cannot be affected by Genjutsu!", "type": "mixed" }
+    ],
+    "//": "Similar as sharingan_genjutsu_eoc ",
+    "//2": "Lasts for 1 week",
+    "//WIP": "TEST THIS"
+  },
+  {
+    "id": "doton_domu_start_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "22" ] },
+    "effect": [ 
+      { "math": [ "u_val('mana')", "-=", "22" ] },
+      { "run_eocs": [ "doton_domu_cycle_1" ] }
+    ],
+    "false_effect": [
+      { "u_message": "You don't have enough chakra!", "type": "bad" },
+      { "math": [ "var_doton_domu", "=", "0" ] },
+      { "u_lose_effect": "doton_domu_effect" }
+    ],
+    "//2": "The spell says it costs +2 mana. The difference is because the effect is granted while cycling once, which consumes that amount"
+  },
+  {
+    "id": "doton_domu_cycle_1",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_doton_domu", "==", "1" ] },
+    "effect": [ { "run_eocs": [ "doton_domu_cycle_2" ] } ]
+  },
+  {
+    "id": "doton_domu_cycle_2",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_val('mana')", ">=", "3" ] },
+    "effect": [
+      { "math": [ "u_val('mana')", "-=", "3" ] },
+      { "u_add_effect": "doton_domu_effect", "duration": "4 s" },
+      { "run_eocs": [ "doton_domu_cycle_1" ], "time_in_future": "3 s" }
+    ],
+    "false_effect": [ { "run_eocs": "doton_domu_oom_eoc" } ]
+  },
+  {
+    "id": "doton_domu_toggle_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "Your skin returns to normal.", "type": "mixed" },
+      { "math": [ "var_doton_domu", "=", "0" ] },
+      { "u_lose_effect": "doton_domu_effect" }
+    ]
+  },
+  {
+    "id": "doton_domu_oom_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_message": "Your chakra reserves are depleted!", "type": "bad" },
+      { "math": [ "var_doton_domu", "=", "0" ] },
+      { "u_lose_effect": "doton_domu_effect" }
+    ]
+  },
+  {
+    "id": "fuuton_atsugai_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "context_val": "var_kakuzu_start_loc" }, "min_radius": 0, "max_radius": 0 },
+      { "math": [ "var_fuuton_atsugai_casted", "+=", "1" ] },
+      { 
+        "run_eocs": [ "fuuton_atsugai_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 0.5 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 0.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Kakuzu has a ~2 s delay when the jutsu is casted by a mask"
+  },
+  {
+    "id": "fuuton_atsugai_2_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_fuuton_atsugai_casted", ">=", "1" ] },
+    "effect": [
+      { 
+        "run_eocs": [ 
+          {
+            "id": "fuuton_atsugai_check_eoc",
+            "condition": { "math": [ "var_katon_zukokku_casted", ">=", "1" ] },
+            "effect": [ 
+              { "u_cast_spell": { "id": "kimen_no_bakuen2" }, "targeted": false },
+              { "math": [ "var_fuuton_atsugai_casted", "=", "0" ] },
+              { "math": [ "var_katon_zukokku_casted", "=", "0" ] }
+            ],
+            "false_effect": [ 
+              {
+                "if": {
+                  "message": "Set target", 
+                  "range": 8,
+                  "u_query_tile": "line_of_sight",
+                  "target_var": { "context_val": "var_kakuzu_end_loc" }
+                },
+                "then": [
+                  { "u_cast_spell": { "id": "fuuton_atsugai2" }, "loc": { "context_val": "var_kakuzu_end_loc" } },
+                  { "math": [ "var_fuuton_atsugai_casted", "=", "0" ] }
+                ],
+                "else": [
+                  { "math": [ "u_val('mana')", "+=", "150" ] },
+                  { "u_message": "Canceled" }
+                ]
+              }
+            ]
+          }
+        ] 
+      }
+    ],
+    "//": "The var_ELEMENT_CASTED is added automatically by the ninjutsu_ELEMENT_casted_eoc at anime_eocs.json "
+  },
+  {
+    "id": "fuuton_shinkuu_dama_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "context_val": "var_kakuzu_start_loc" }, "min_radius": 0, "max_radius": 0 },
+      { 
+        "run_eocs": [ "fuuton_shinkuu_dama_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 0.5 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 0.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Added +1 s delay due being a 'breathe in' style ninjutsu"
+  },
+  {
+    "id": "fuuton_shinkuu_dama_2_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 16,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "context_val": "var_kakuzu_end_loc" }
+        },
+        "then": [
+          { "u_cast_spell": { "id": "fuuton_shinkuu_dama2" }, "loc": { "context_val": "var_kakuzu_end_loc" } }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "150" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "katon_endan_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { 
+        "run_eocs": [ "katon_endan_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 5 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 0.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Added +1 s delay due being a 'breathe in' style ninjutsu"
+  },
+  {
+    "id": "katon_endan_2_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 8,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "context_val": "var_katon_loc" }
+        },
+        "then": [
+          { "u_cast_spell": { "id": "katon_endan2" }, "loc": { "context_val": "var_katon_loc" } }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "50" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "katon_goukakyuu_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { 
+        "run_eocs": [ "katon_goukakyuu_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 3 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 0.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Itachi finishes hand seals + breathes in air ( >1 + 1 s total), so a minimum delay further is added"
+  },
+  {
+    "id": "katon_goukakyuu_2_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 8,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "context_val": "var_katon_loc" }
+        },
+        "then": [
+          { "u_cast_spell": { "id": "katon_goukakyuu2" }, "loc": { "context_val": "var_katon_loc" } }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "50" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "katon_housenka_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "math": [ "u_var_housenka_number", "+=", "3 + rand(1)" ] },
+      { 
+        "run_eocs": [ "katon_housenka_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 3 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 0.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Added +1 s delay due being a 'breathe in' style ninjutsu"
+  },
+  {
+    "id": "katon_housenka_2_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "u_var_housenka_number", ">=", "1" ] },
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 8,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "context_val": "var_katon_loc" }
+        },
+        "then": [
+          { "u_cast_spell": { "id": "katon_housenka2" }, "loc": { "context_val": "var_katon_loc" } },
+          { "math": [ "u_var_housenka_number", "-=", "1" ] }
+        ],
+        "else": [
+          { "math": [ "u_var_housenka_number", "=", "0" ] },
+          { "math": [ "u_val('mana')", "+=", "50" ] },
+          { "u_message": "Canceled" }
+        ]
+      },
+      { "run_eocs": [ "katon_housenka_2_eoc" ], "time_in_future": 0.33 }
+    ]
+  },
+  {
+    "id": "katon_zukokku_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "context_val": "var_kakuzu_start_loc" }, "min_radius": 0, "max_radius": 0 },
+      { "math": [ "var_katon_zukokku_casted", "+=", "1" ] },
+      { 
+        "run_eocs": [ "katon_zukokku_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 1.5 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 1.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Kakuzu has a ~2 s delay when the jutsu is casted by a mask"
+  },
+  {
+    "id": "katon_zukokku_2_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "var_katon_zukokku_casted", ">=", "1" ] },
+    "effect": [
+      { 
+        "run_eocs": [ 
+          {
+            "id": "katon_zukokku_check_eoc",
+            "condition": { "math": [ "var_fuuton_atsugai_casted", ">=", "1" ] },
+            "effect": [ 
+              { "u_cast_spell": { "id": "kimen_no_bakuen2" }, "targeted": false },
+              { "math": [ "var_fuuton_atsugai_casted", "=", "0" ] },
+              { "math": [ "var_katon_zukokku_casted", "=", "0" ] }
+            ],
+            "false_effect": [ 
+              {
+                "if": {
+                  "message": "Set target", 
+                  "range": 12,
+                  "u_query_tile": "line_of_sight",
+                  "target_var": { "context_val": "var_kakuzu_end_loc" }
+                },
+                "then": [
+                  { "u_cast_spell": { "id": "katon_zukokku2" }, "loc": { "context_val": "var_kakuzu_end_loc" } },
+                  { "math": [ "var_katon_zukokku_casted", "=", "0" ] }
+                ],
+                "else": [
+                  { "math": [ "u_val('mana')", "+=", "150" ] },
+                  { "u_message": "Canceled" }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "raiton_gian_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "context_val": "var_kakuzu_start_loc" }, "min_radius": 0, "max_radius": 0 },
+      { 
+        "run_eocs": [ "raiton_gian_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 0.5 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 0.5, ( 0.5 + max( 0.5, u_ninja_delay ) ), ( 1 + u_ninja_delay ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Kakuzu has a ~2 s delay when the jutsu is casted by a mask"
+  },
+  {
+    "id": "raiton_gian_2_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 16,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "context_val": "var_kakuzu_end_loc" }
+        },
+        "then": [
+          { "u_cast_spell": { "id": "raiton_gian2" }, "loc": { "context_val": "var_kakuzu_end_loc" } }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "150" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "suiton_suidan_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { 
+        "run_eocs": [ "suiton_suidan_2_eoc" ], 
+        "time_in_future": { 
+          "math": [ 
+            "max( 2 * ( -0.125 * u_ninja_hand_seals + 1.125 ) * ( -0.125 * u_ninja_speed + 1.125 ) + 1, ( 0.5 + max( 1, u_ninja_delay ) ) )" 
+          ] 
+        } 
+      }
+    ],
+    "//": "Added +1 s delay due being a 'breathe in' style ninjutsu"
+  },
+  {
+    "id": "suiton_suidan_2_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 8,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "context_val": "var_suiton_loc" }
+        },
+        "then": [
+          { "u_cast_spell": { "id": "suiton_suidan2" }, "loc": { "context_val": "var_suiton_loc" } }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "50" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "kakuzu_thread_heart_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      { "u_location_variable": { "global_val": "var_kakuzu_start_loc" } },
+      {
+        "if": {
+          "message": "Set target", 
+          "range": 2,
+          "u_query_tile": "line_of_sight",
+          "target_var": { "global_val": "var_kakuzu_thread_heart_loc" }
+        },
+        "then": [ 
+          { 
+            "queue_eocs": "kakuzu_thread_heart_npc_eoc", 
+            "alpha_loc": { "global_val": "var_kakuzu_start_loc" }, 
+            "beta_loc": { "global_val": "var_kakuzu_thread_heart_loc" } 
+          },
+          { 
+            "queue_eocs": "kakuzu_thread_heart_monster_eoc", 
+            "alpha_loc": { "global_val": "var_kakuzu_start_loc" }, 
+            "beta_loc": { "global_val": "var_kakuzu_thread_heart_loc" } 
+          }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "50" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ],
+    "//": "This sets Kakuzu's location and the target's location, then runs the NPC check first, and then the monster check",
+    "//2": "The checks have to be separated in order to stop the monster check after a NPC is found (with the var_NPC_FOUND )"
+  },
+  {
+    "id": "kakuzu_thread_heart_npc_eoc",
+    "type": "effect_on_condition",
+    "condition": "npc_is_npc",
+    "effect": [ 
+      { "math": [ "var_kakuzu_heart_npc_found", "+=", "1" ] },
+      { "u_cast_spell": { "id": "kakuzu_thread_heart2" }, "loc": { "global_val": "var_kakuzu_thread_heart_loc" } },
+      "insult_combat"
+    ],
+    "false_effect": [ 
+      { "math": [ "var_kakuzu_heart_npc_found", "=", "0" ] }
+    ],
+    "//": "This just checks if the target is a NPC. If so it adds var_NPC_FOUND (to stop the monster check) and aggroes (aggros?) them",
+    "//2": "If there was no NPC at the location, it sets the var_NPC_FOUND to zero so the monster check can be done"
+  },
+  {
+    "id": "TALK_kakuzu_thread_heart_dialogue",
+    "type": "talk_topic",
+    "dynamic_line": "",
+    "responses": [
+      {
+        "text": "",
+        "effect": [ "insult_combat" ],
+        "topic": "TALK_DONE"
+      }
+    ],
+    "replace_built_in_responses": true
+  },
+  {
+    "id": "kakuzu_thread_heart_monster_eoc",
+    "type": "effect_on_condition",
+    "condition": { 
+      "and": [
+        { "math": [ "var_kakuzu_heart_npc_found", "==", "0" ] },
+        { "npc_has_species": "HUMAN" },
+        { "not": { "npc_has_species": "ZOMBIE" } }
+      ]
+    },
+    "effect": [ 
+      { "math": [ "var_kakuzu_heart_npc_found", "=", "0" ] },
+      { "u_cast_spell": { "id": "kakuzu_thread_heart2" }, "loc": { "global_val": "var_kakuzu_thread_heart_loc" } }
+    ],
+    "false_effect": [ 
+      { "math": [ "var_kakuzu_heart_npc_found", "=", "0" ] },
+      { "u_message": "That is not a suitable heart.", "type": "mixed" }
+    ],
+    "//": "This checks if the target is HUMAN and not a ZOMBIE (cdda zombies have both species). If so, it then casts the spell at it",
+    "//2": "Regardless of the outcome, the var_NPC_FOUND is reset",
+    "//3": "The kill and fail-to-kill messages are handled by kakuzu_thread_heart_kill_monster_eoc "
+  },
+  {
+    "id": "kakuzu_thread_pull_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      {
+        "if": {
+          "message": "Set target", 
+          "range": { "math": [ "max( 6, u_skill('dodge') )" ] },
+          "u_query_tile": "line_of_sight",
+          "target_var": { "global_val": "var_kakuzu_thread_pull_loc" }
+        },
+        "then": [ 
+          { "run_eocs": [ "kakuzu_thread_pull_check_creature_eoc" ] },
+          { "run_eocs": [ "kakuzu_thread_pull_check_item_eoc" ] }
+        ],
+        "else": [
+          { "math": [ "u_val('mana')", "+=", "50" ] },
+          { "u_message": "Canceled" }
+        ]
+      }
+    ],
+    "//": "Simplified nitori_extendo_arm_eoc . This first saves the target's location, then sequentially checks for creatures (NPCs, monsters), and then another to check for items"
+  },
+  {
+    "id": "kakuzu_thread_pull_check_creature_eoc",
+    "type": "effect_on_condition",
+    "effect": [ { "u_cast_spell": { "id": "kakuzu_thread_pull_creature_spell" }, "loc": { "global_val": "var_kakuzu_thread_pull_loc" } } ],
+    "//": "If there's a creature at the location, Kakuzu casts this spell on them, which forces them to run the following EOC"
+  },
+  {
+    "id": "kakuzu_thread_pull_creature_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "u_location_variable": { "global_val": "var_kakuzu_thread_pull_loc" } },
+      { 
+        "run_eocs": [ 
+          {
+            "id": "kakuzu_thread_pull_pulling_1",
+            "condition": { "math": [ "( n_weight() * 3 )", ">=", "u_weight()" ] },
+            "effect": [ 
+              { "u_cast_spell": { "id": "kakuzu_thread_pull3" } },
+              { "npc_cast_spell": { "id": "kakuzu_thread_pull_pull" }, "loc": { "global_val": "var_kakuzu_thread_pull_loc" } },
+              { "npc_message": "You pull your target towards you!", "type": "good" }
+            ],
+            "false_effect": [ 
+              { "npc_message": "The target is too heavy!", "type": "mixed" }
+            ]
+          }
+        ] 
+      },
+      { "math": [ "kakuzu_thread_pull_creature", "+=", "1" ] }
+    ],
+    "//": "If there's no creature at the location, the previous EOC -> spell is not cast and this EOC is not run. This is run by the target, so n/npc_ here is Kakuzu",
+    "//2": "This checks if the targeted creature's weight is less or equal than x3 Kakuzu's weight, and pulls it if so",
+    "//4": "It also forces the target to cast the self stun",
+    "//5": "Then, it adds the var_CREATUREFOUND that stops the checks below"
+  },
+  {
+    "id": "kakuzu_thread_pull_check_item_eoc",
+    "type": "effect_on_condition",
+    "condition": { "math": [ "kakuzu_thread_pull_creature", "==", "0" ] },
+    "effect": [
+      {
+        "u_map_run_item_eocs": "all",
+        "//search_data": [  ],
+        "loc": { "global_val": "var_kakuzu_thread_pull_loc" },
+        "min_radius": 0,
+        "max_radius": 0,
+        "true_eocs": [ 
+          {
+            "id": "kakuzu_thread_pull_pulling_2",
+            "condition": { "math": [ "( u_weight() * 3 )", ">=", "n_weight()" ] },
+            "effect": [ 
+              { "u_cast_spell": { "id": "kakuzu_thread_pull_pull" }, "loc": { "global_val": "var_kakuzu_thread_pull_loc" } },
+              { "u_message": "You pull your target towards you!", "type": "good" },
+              { "math": [ "kakuzu_thread_pull_item", "+=", "1" ] },
+              { "run_eocs": [ "kakuzu_thread_pull_reset_eoc" ] }
+            ],
+            "false_effect": [ 
+              { "npc_message": "The target is too heavy!", "type": "mixed" },
+              { "math": [ "kakuzu_thread_pull_item", "+=", "1" ] },
+              { "run_eocs": [ "kakuzu_thread_pull_reset_eoc" ] }
+            ]
+          } 
+        ]
+      }
+    ],
+    "false_effect": [ { "run_eocs": [ "kakuzu_thread_pull_reset_eoc" ] } ],
+    "//": "Unlike the previous EOC, this is run by Kakuzu, so u_ is him",
+    "//2": "This only runs if there was no targeted creature",
+    "//3": "If that's the case, it checks if x3 Kakuzu's weight is heavier than the (heaviest) item, and pulls it if so",
+    "//4": "It pulls anything in the stack. It doesn't pull items out of furniture or containers"
+  },
+  {
+    "id": "kakuzu_thread_pull_reset_eoc",
+    "type": "effect_on_condition",
+    "effect": [
+      { "math": [ "kakuzu_thread_pull_creature", "=", "0" ] },
+      { "math": [ "kakuzu_thread_pull_item", "=", "0" ] }
+    ]
+  }
+]

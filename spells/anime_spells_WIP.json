@@ -1,0 +1,52 @@
+[
+  {
+    "id": "railgun_4_spell_eoc_WIP",
+    "type": "effect_on_condition",
+    "effect": [
+      {
+        "u_run_inv_eocs": "random",
+        "search_data": [ 
+          { "id": "combatnail" },
+          { "id": "bronze_nail" },
+          { "id": "nail" },
+          { "id": "nuts_bolts" }
+        ],
+        "true_eocs": [ 
+          {
+            "id": "railgun_4_spell_prepare_eoc_WIP",
+            "effect": [ 
+              { 
+                "run_eocs": [ 
+                  {
+                    "id": "railgun_4_spell_shoot_eoc_WIP",
+                    "effect": [ 
+                      { "math": [ "u_val('mana')", "-=", "100" ] },
+                      { 
+                        "u_cast_spell": { "id": "railgun_4_spell2" }, "targeted": true,
+                        "true_eocs": [ 
+                          {
+                            "id": "railgun_4_spell_destroy_coin_eoc_WIP",
+                            "effect": [ "npc_die" ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ], 
+                "time_in_future": "1 s" 
+              }
+            ]
+          }
+        ],
+        "false_eocs": [ 
+          {
+            "id": "railgun_4_spell_no_WIP",
+            "effect": [ { "u_message": "You don't have a nail-shaped item to use.", "type": "mixed" } ]
+          }
+        ]
+      }
+    ],
+    "//": "Similar to the default version, except with a 1 s delay to emulate throwing the item, aiming, charging, etc",
+    "//2": "Not used because run_eocs is weird and it forgets the coin is the beta talker, so it defaults to the character, and it kills them instead"
+  }
+]

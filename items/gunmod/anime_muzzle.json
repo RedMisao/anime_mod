@@ -1,0 +1,17 @@
+[
+  {
+    "id": "supressor_f2000r",
+    "type": "GUNMOD",
+    "name": { "str": "F2000R integrated flash hider" },
+    "copy-from": "suppressor",
+    "description": "An integrated flash hider for the Toy Soldier, having dual function as a supressor.",
+    "integral_volume": "0 ml",
+    "integral_longest_side": "0 cm",
+    "material": [ "plastic" ],
+    "color": "black",
+    "install_time": "6 s",
+    "location": "muzzle",
+    "min_skills": [ [ "weapon", 8 ] ],
+    "mod_targets": [ "rifle" ]
+  }
+]

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "anime_mod",
+    "type": "MOD_INFO",
+    "category": "anime",
+    "name": "The anime mod",
+    "description": "Adds professions based on anime (and manga) characters.  Coregame balance not guaranteed.  Then again, isn't that the point?",
+    "authors": [ "RedMisao" ],
+    "dependencies": [ "dda" ]
+  }
+]

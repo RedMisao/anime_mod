@@ -1,0 +1,35 @@
+[
+  {
+    "id": "death_karasu_bunshin",
+    "type": "SPELL",
+    "name": { "str": "karasu bunshin death" },
+    "description": "Death for mon_karasu_bunshin ",
+    "valid_targets": [ "ground", "hostile" ],
+    "effect": "attack",
+    "effect_str": "stunned",
+    "extra_effects": [ { "id": "death_karasu_bunshin2", "hit_self": true } ],
+    "shape": "blast",
+    "damage_type": "pure",
+    "min_aoe": 4,
+    "max_aoe": 4,
+    "min_duration": 100,
+    "max_duration": 300,
+    "message": "",
+    "flags": [  ]
+  },
+  {
+    "id": "death_karasu_bunshin2",
+    "type": "SPELL",
+    "name": { "str": "karasu bunshin death" },
+    "description": "Death for mon_karasu_bunshin ",
+    "spell_class": "NONE",
+    "valid_targets": [ "self" ],
+    "effect": "attack",
+    "shape": "blast",
+    "damage_type": "pure",
+    "min_damage": 99,
+    "max_damage": 99,
+    "message": "",
+    "flags": [ "NO_EXPLOSION_SFX", "NO_FAIL", "NO_PROJECTILE", "SILENT" ]
+  }
+]

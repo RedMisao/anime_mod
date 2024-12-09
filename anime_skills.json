@@ -1,0 +1,11 @@
+[
+  {
+    "type": "skill",
+    "id": "metaphysics",
+    "name": { "str": "metaphysics" },
+    "display_category": "display_ranged",
+    "sort_rank": 14500,
+    "description": "Your ability to manipulate psionic energy.",
+    "//": "Copied from Aftershock's, in order to allow spells with the PSIONIC flag to not fail when espers cast their powers"
+  }
+]

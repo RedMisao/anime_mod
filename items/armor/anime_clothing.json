@@ -1,0 +1,272 @@
+[
+  {
+    "id": "accelerator_choker",
+    "type": "ARMOR",
+    "name": { "str": "Choker-style electrode" },
+    "copy-from": "silver_necklace",
+    "description": "WIP",
+    "material": [ "cotton", "steel" ],
+    "material_thickness": 2,
+    "color": "black",
+    "use_action": {
+      "type": "effect_on_conditions",
+      "menu_text": "Toggle switch",
+      "description": "Toggle switch of the choker.  Drains energy while active.",
+      "effect_on_conditions": [ "accelerator_choker_eoc" ]
+    },
+    "armor": [ { "encumbrance": 0, "coverage": 5, "covers": [ "torso" ], "specifically_covers": [ "torso_neck" ] } ],
+    "flags": [ "TRADER_AVOID", "UNBREAKABLE" ],
+    "//": "WIP"
+  },
+  {
+    "id": "akatsuki_ring",
+    "type": "ARMOR",
+    "name": { "str": "<color_red>A</color><color_dark_gray>katsuki</color> ring" },
+    "copy-from": "diamond_ring",
+    "description": "A ring of the organization.",
+    "material": [ { "type": "steel", "portion": 9 }, { "type": "diamond" } ],
+    "color": "dark_gray",
+    "variants": [
+      {
+        "id": "akatsuki_ring_itachi",
+        "name": { "str": "<color_red>A</color><color_dark_gray>katsuki</color> ring" },
+        "description": "A ring of the organization.  The sign 「 Vermilion 」 is engraved on the gem.",
+        "weight": 1
+      },
+      {
+        "id": "akatsuki_ring_kakuzu",
+        "name": { "str": "<color_red>A</color><color_dark_gray>katsuki</color> ring" },
+        "description": "A ring of the organization.  The sign 「 North 」 is engraved on the gem.",
+        "weight": 1
+      }
+    ],
+    "extend": { "flags": [ "TRADER_AVOID" ] }
+  },
+  {
+    "id": "akatsuki_robe",
+    "type": "ARMOR",
+    "category": "armor",
+    "name": { "str": "<color_red>A</color><color_dark_gray>katsuki</color> robe" },
+    "copy-from": "trenchcoat",
+    "description": "A whole-body cloak.  The exterior is black, with red clouds, while the interior is a dark red.",
+    "color": "black",
+    "material_thickness": 3,
+    "environmental_protection": 2,
+    "armor": [
+      { "covers": [ "arm_l", "arm_r" ], "coverage": 100, "encumbrance": [ 0, 8 ] },
+      {
+        "covers": [ "head" ],
+        "coverage": 65,
+        "encumbrance": 0,
+        "specifically_covers": [ "head_nape", "head_throat" ]
+      },
+      { "covers": [ "torso" ], "coverage": 100, "encumbrance": [ 0, 8 ] },
+      { "covers": [ "leg_l", "leg_r" ], "coverage": 90, "encumbrance": [ 0, 8 ] }
+    ]
+  },
+  {
+    "id": "akatsuki_sandals",
+    "type": "ARMOR",
+    "category": "armor",
+    "name": { "str": "pair of <color_red>A</color><color_dark_gray>katsuki</color> sandals", "str_pl": "pairs of <color_red>A</color><color_dark_gray>katsuki</color> sandals" },
+    "copy-from": "leathersandals",
+    "description": "Sturdy dark leather sandals.",
+    "color": "black",
+    "armor": [
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "coverage": 90,
+        "encumbrance": 0,
+        "specifically_covers": [ "foot_ankle_r", "foot_ankle_l", "foot_arch_r", "foot_arch_l", "foot_heel_r", "foot_heel_l" ]
+      },
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "coverage": 20,
+        "specifically_covers": [   "foot_toes_r", "foot_toes_l" ]
+      },
+      {
+        "covers": [ "foot_l", "foot_r" ],
+        "coverage": 100,
+        "specifically_covers": [ "foot_sole_r", "foot_sole_l" ]
+      }
+    ],
+    "material_thickness": 3
+  },
+  {
+    "id": "misaka_nvg",
+    "type": "TOOL_ARMOR",
+    "category": "armor",
+    "name": { "str_sp": "Electron (NV) goggles" },
+    "description": "A custom night vision device, made from advanced AC materials.  Somewhat bulky in design, probably because the users wouldn't complain about ergonomics.  The night vision can be passively powered by the esper's AIM, although it does require a small input of electric power to enable full-range vision and turn on the electromagnetic flux vision.  The goggles are resting on your forehead now.",
+    "volume": "1400 ml",
+    "weight": "720 g",
+    "price_postapoc": "350 USD",
+    "material": [ "composite_transp", "nanotubes", "superalloy" ],
+    "symbol": "[",
+    "looks_like": "enhanced_nvg",
+    "color": "black",
+    "material_thickness": 1,
+    "use_action": {
+      "type": "transform",
+      "target": "misaka_nvg2",
+      "msg": "You put on your goggles."
+    },
+    "armor": [
+      { "covers": [ "head" ], "coverage": 10, "encumbrance": 10, "specifically_covers": [ "head_forehead", "head_crown" ] }
+    ],
+    "relic_data": { "passive_effects": [ { "id": "ench_misaka_nvg" } ] },
+    "flags": [ "OUTER", "PADDED", "MUNDANE" ],
+    "//": "So uh, I dunno why, but adding the relic_data to misaka_nvg2 doesn't work, so the flag is added to make it work ONLY if Misaka is using it and ONLY if she's wearing MISAKA_NV "
+  },
+  {
+    "id": "misaka_nvg2",
+    "type": "TOOL_ARMOR",
+    "category": "armor",
+    "copy-from": "misaka_nvg",
+    "name": { "str_sp": "Electron (NV) goggles (on)" },
+    "description": "A custom night vision device, made from advanced AC materials.  Somewhat bulky in design, probably because the users wouldn't complain about ergonomics.  The night vision can be passively powered by the esper's AIM, although it does require a small input of electric power to enable full-range vision and turn on the electromagnetic flux vision.  You're wearing the goggles now.",
+    "looks_like": "enhanced_nvg_on",
+    "use_action": {
+      "type": "transform",
+      "target": "misaka_nvg",
+      "msg": "You raise the goggles."
+    },
+    "armor": [
+      { "covers": [ "eyes" ], "coverage": 100, "encumbrance": 10, "rigid_layer_only": true }
+    ],
+    "extend": { "flags": [ "MISAKA_NV" ] }
+  },
+  {
+    "id": "ninja_vest",
+    "type": "ARMOR",
+    "name": { "str": "ninja vest", "str_pl": "ninja vests" },
+    "description": "A dark, sleeveless vest",
+    "volume": "2000 ml",
+    "weight": "408 g",
+    "price_postapoc": "50 cent",
+    "material": [ "cotton" ],
+    "symbol": "[",
+    "looks_like": "jacket_ninja",
+    "color": "black",
+    "warmth": 5,
+    "material_thickness": 2,
+    "armor": [
+      { "covers": [ "torso" ], "coverage": 95, "encumbrance": 0 }
+    ],
+    "flags": [ "VARSIZE" ],
+    "//": "Cargo culted from ninja_dress "
+  },
+  {
+    "id": "tokiwadai_blazer",
+    "type": "ARMOR",
+    "name": { "str": "Tokiwadai Middle School blazer" },
+    "copy-from": "blazer",
+    "description": "A light-brown, buttoned blazer.",
+    "color": "dark_gray"
+  },
+  {
+    "id": "tokiwadai_skirt",
+    "type": "ARMOR",
+    "name": { "str": "Tokiwadai Middle School skirt" },
+    "copy-from": "kilt",
+    "description": "A dark-blue skirt, with a tartan design.",
+    "armor": [
+      { "covers": [ "leg_l", "leg_r" ], "coverage": 100, "specifically_covers": [ "leg_hip_l", "leg_hip_r" ] },
+      { "covers": [ "leg_l", "leg_r" ], "coverage": 75, "specifically_covers": [ "leg_upper_l", "leg_upper_r" ] }
+    ]
+  },
+  {
+    "id": "worst_harness",
+    "type": "ARMOR",
+    "name": { "str": "<color_light_gray>Third Season parachuting harness.</color>", "str_pl": "<color_light_gray>Third Season parachuting harnesses.</color>" },
+    "description": "A harness, developed for the <color_light_gray>Third Season Project</color>, made from advanced AC materials.  It's designed to distribute weight around the user, to improve paratrooping and field deployment.",
+    "volume": "1250 ml",
+    "weight": "320 g",
+    "price_postapoc": "40 USD",
+    "material": [ "composite_transp", "nanotubes", "superalloy" ],
+    "symbol": "[",
+    "looks_like": "survivor_vest",
+    "color": "dark_gray",
+    "material_thickness": 1,
+    "pocket_data": [
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1000 ml",
+        "max_contains_weight": "2 kg",
+        "moves": 80,
+        "max_item_length": "10 cm",
+        "description": "Waist pocket."
+      },
+      {
+        "pocket_type": "CONTAINER",
+        "max_contains_volume": "1000 ml",
+        "max_contains_weight": "2 kg",
+        "moves": 80,
+        "max_item_length": "10 cm",
+        "description": "Waist pocket."
+      }
+    ],
+    "armor": [
+      { "covers": [ "torso" ], "coverage": 10, "encumbrance": [ 0, 4 ] }
+    ],
+    "flags": [ "BELTED", "STURDY", "WATER_FRIENDLY" ]
+  },
+  {
+    "id": "worst_mask",
+    "type": "ARMOR",
+    "name": { "str": "<color_light_gray>Third Season mask.</color>" },
+    "description": "A tactical mask, developed for the <color_light_gray>Third Season Project</color>.",
+    "weight": "470 g",
+    "volume": "2500 ml",
+    "price_postapoc": "2 USD 50 cent",
+    "material": [ "composite_transp", "nanotubes", "superalloy" ],
+    "symbol": "[",
+    "looks_like": "fencing_mask",
+    "//": "Not really",
+    "color": "light_gray",
+    "armor": [
+      {
+        "covers": [ "head" ],
+        "coverage": 50,
+        "encumbrance": 10,
+        "specifically_covers": [ "head_forehead" ]
+      },
+      {
+        "covers": [ "eyes", "mouth" ],
+        "coverage": 100,
+        "encumbrance": 10
+      }
+    ],
+    "warmth": 10,
+    "material_thickness": 1,
+    "flags": [ "PADDED", "SUN_GLASSES", "VARSIZE" ],
+    "//note": "This has to be nerfed somehow btw. Also expand the description"
+  },
+  {
+    "id": "worst_suit",
+    "type": "TOOL_ARMOR",
+    "name": { "str": "<color_light_gray>Third Season body suit.</color>", "str_pl": "<color_light_gray>Third Season body suits.</color>" },
+    "description": "A full-body suit, developed for the <color_light_gray>Third Season Project</color>, made from advanced AC materials.  It serves dual purpose, as combat armor, and to grant protection in harsh environments.",
+    "volume": "3500 ml",
+    "weight": "4000 g",
+    "price_postapoc": "17 USD 50 cent",
+    "material": [ "composite_transp", "nanotubes", "superalloy" ],
+    "symbol": "[",
+    "looks_like": "armor_nomad_advanced",
+    "color": "light_gray",
+    "warmth": 50,
+    "material_thickness": 2,
+    "environmental_protection": 2,
+    "armor": [
+      {
+        "coverage": 100,
+        "cover_vitals": 100,
+        "covers": [ "torso", "leg_l", "leg_r", "foot_l", "foot_r", "arm_l", "arm_r" ],
+        "encumbrance": [ 0, 4 ],
+        "breathability": "SECOND_SKIN"
+      }
+    ],
+    "flags": [ "PADDED", "POCKETS", "STURDY", "VARSIZE", "WATERPROOF" ],
+    "//": "Can't be SKINTIGHT as that will conflict with underwear"
+  }
+]

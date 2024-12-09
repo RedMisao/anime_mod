@@ -1,0 +1,26 @@
+[
+  {
+    "id": "karasu_bushin_no_jutsu",
+    "type": "SPELL",
+    "name": { "str": "<color_dark_gray>Karasu</color> bunshin no jutsu" },
+    "description": "Create a random number of copies of yourself, made of crows.",
+    "spell_class": "NINJA",
+    "valid_targets": [ "ground" ],
+    "effect": "summon",
+    "effect_str": "mon_karasu_bunshin",
+    "shape": "blast",
+    "min_damage": 1,
+    "max_damage": 2,
+    "min_aoe": 5,
+    "max_aoe": 5,
+    "min_duration": 5500,
+    "max_duration": 6500,
+    "max_level": 1,
+    "difficulty": -20,
+    "message": "",
+    "base_casting_time": 25,
+    "base_energy_cost": 100,
+    "energy_source": "MANA",
+    "flags": [ "MUST_HAVE_CLASS_TO_LEARN", "NO_EXPLOSION_SFX", "NO_HANDS", "NO_LEGS", "RANDOM_DAMAGE", "RANDOM_DURATION" ]
+  }
+]

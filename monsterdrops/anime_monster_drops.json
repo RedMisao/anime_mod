@@ -1,0 +1,7 @@
+[
+  {
+    "id": "mizu_bunshin_drops",
+    "type": "item_group",
+    "items": [ [ "water_murky", 1 ], [ "water", 1 ] ]
+  }
+]

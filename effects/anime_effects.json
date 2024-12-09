@@ -1,0 +1,394 @@
+[
+  {
+    "id": "dash_levitation",
+    "type": "effect_type",
+    "name": [ "" ],
+    "desc": [ "" ],
+    "rating": "good",
+    "flags": [ "FEATHER_FALL", "ITEM_WATERPROOFING", "LEVITATION", "WATERWALKING" ],
+    "//": "This effect is used in dashes (and similar), so the caster can 'jump' between z-level falls without dropping, breaking some bones, and moving to the end position"
+  },
+  {
+    "id": "accelerator_demerit",
+    "type": "effect_type",
+    "name": [ "" ],
+    "desc": [ "" ],
+    "max_intensity": 1,
+    "max_effective_intensity": 1,
+    "//WIP": ""
+  },
+  {
+    "id": "accelerator_esper_mode_effect",
+    "type": "effect_type",
+    "name": [ "Esper mode" ],
+    "desc": [ "The choker-syle electrode is set to Esper mode." ],
+    "rating": "good",
+    "//WIP": ""
+  },
+  {
+    "id": "accelerator_passive_1_effect",
+    "type": "effect_type",
+    "name": [ "Reflection" ],
+    "desc": [ "Reversing incoming harmful vectors." ],
+    "rating": "good",
+    "enchantments": [
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "FORCEFIELD", "add": 1 } 
+        ] 
+      }
+    ],
+    "blocks_effects": [
+      "badpoison",
+      "bite",
+      "bleed",
+      "blind",
+      "blisters",
+      "bloodworms",
+      "beartrap",
+      "boomered",
+      "brainworms",
+      "cold",
+      "common_cold",
+      "corroding",
+      "crushed",
+      "dazed",
+      "dermatik",
+      "disabled",
+      "downed",
+      "fetid_goop",
+      "flu",
+      "flushot",
+      "formication",
+      "foodpoison",
+      "frostbite",
+      "frostbite_recovery",
+      "fungus",
+      "glowing",
+      "grabbed",
+      "grabbing",
+      "hallu",
+      "high",
+      "hot",
+      "hot_speed",
+      "infected",
+      "irradiated",
+      "nightmares",
+      "onfire",
+      "paralyzepoison",
+      "pblue",
+      "pkill",
+      "pkill1",
+      "pkill2",
+      "pkill3",
+      "pkill_l",
+      "pkill_wintergreen",
+      "pkill_wintergreen_oil",
+      "playing_instrument",
+      "poison",
+      "prophylactic_antivenom",
+      "sap",
+      "sensor_stun",
+      "slimed",
+      "sludged",
+      "spores",
+      "staggered",
+      "stung",
+      "stunned",
+      "tetanus",
+      "tpollen",
+      "venom_blind",
+      "venom_dmg",
+      "venom_weaken",
+      "venom_pain",
+      "webbed",
+      "wet",
+      "zapped"
+    ],
+    "//": "Blocks, not removes, anything 'bad' coming from physical sources, except for gasses and auditory stuff",
+    "//2": "Blocks 'bad' visual effects if they're environmental",
+    "//3": "Does not block mental stuff, stuff from comestibles, or stuff coming/caused by portal storm stuff",
+    "//WIP": "This list is so long it probably needs re-checking",
+    "//WIP2": "This should *redirect* incoming damage to the target",
+    "//WIP3": "This is active ONLY in Esper mode"
+  },
+  {
+    "id": "accelerator_passive_2_effect",
+    "type": "effect_type",
+    "name": [ "Reflection (non-harmful)" ],
+    "desc": [ "Reversing incoming non-harmful vectors." ],
+    "rating": "good",
+    "blocks_effects": [
+      "cig",
+      "deaf",
+      "glare",
+      "music",
+      "playing_instrument",
+      "relax_gas",
+      "smoke",
+      "snow_glare",
+      "teargas"
+    ],,
+    "//": "Blocks, not removes, anything 'annoying' coming from physical sources. Basically sound, aggressive lighting, things that can be smelled around, etc",
+    "//2": "This is minor enough it can stay active without draining battery",
+    "//WIP": "But it should go away while on 'low battery' mode"
+  },
+  {
+    "id": "amaterasu_effect",
+    "type": "effect_type",
+    "name": [ "Amaterasu (effect)" ],
+    "desc": [ "Surrounded by black flames." ],
+    "show_in_info": true,
+    "rating": "bad",
+    "enchantments": [
+      { 
+        "condition": "ALWAYS",
+        "emitter": "emit_amaterasu"
+      }
+    ],
+    "//WIP": "This creates 1 field every turn or so. It's too much, should be every 2 - 5 s",
+    "//WIP2": "Still, doesn't matter a lot given the emit isn't procced by monsters"
+  },
+  {
+    "id": "doton_domu_effect",
+    "type": "effect_type",
+    "name": [ "Doton: Domu" ],
+    "desc": [ "" ],
+    "apply_message": "Your skin darkens and hardens.",
+    "remove_message": "",
+    "rating": "good",
+    "enchantments": [ 
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "ARMOR_BASH", "add": { "math": [ " - max( u_skill('melee') * 2, ( u_skill('unarmed') - 2 ) * 2 )" ] } },
+          { "value": "ARMOR_BULLET", "add": { "math": [ " - max( u_skill('melee') * 2, ( u_skill('unarmed') - 2 ) * 2 )" ] } },
+          { "value": "ARMOR_CUT", "add": { "math": [ " - max( u_skill('melee') * 2, ( u_skill('unarmed') - 2 ) * 2 )" ] } },
+          { "value": "ARMOR_STAB", "add": { "math": [ " - max( u_skill('melee') * 2, ( u_skill('unarmed') - 2 ) * 2 )" ] } },
+          { "value": "ARMOR_ACID", "add": { "math": [ " - max( u_skill('melee') * 1, ( u_skill('unarmed') - 2 ) * 1 )" ] } },
+          { "value": "ARMOR_BIO", "add": { "math": [ " - max( u_skill('melee') * 1, ( u_skill('unarmed') - 2 ) * 1 )" ] } },
+          { "value": "ARMOR_COLD", "add": { "math": [ " - max( u_skill('melee') * 1, ( u_skill('unarmed') - 2 ) * 1 )" ] } },
+          { "value": "ARMOR_ELEC", "add": { "math": [ "( max( u_skill('melee') * 1, ( u_skill('unarmed') - 2 ) * 1 ) )" ] } },
+          { "value": "ARMOR_HEAT", "add": { "math": [ " - max( u_skill('melee') * 1, ( u_skill('unarmed') - 2 ) * 1 )" ] } }
+        ] 
+      },
+      { 
+        "condition": { "not": "u_has_weapon" },
+        "values": [ 
+          { "value": "ITEM_DAMAGE_BASH", "add": { "math": [ "1 + rand( max( u_skill('unarmed') * 2, u_skill('melee') * 1.5 ) * 2/3 )" ] } },
+          { "value": "OVERKILL_DAMAGE", "multiply": -2 }
+        ] 
+      }
+    ],
+    "//": "Grants armor for physical stuff > magical stuff. Grants negative electric armor because Earth is weak to Electricity",
+    "//2": "ARMOR_X add -n ADDS armor for n value."
+  },
+  {
+    "id": "anime_flight_mikoto_effect",
+    "type": "effect_type",
+    "name": [ "Electric wings (effect)" ],
+    "desc": [ "You're flying." ],
+    "rating": "good",
+    "enchantments": [
+      {
+        "condition": { "not": { "u_has_move_mode": "run" } }, 
+        "values": [
+          { "value": "MOVE_COST", "multiply": -0.35 }
+        ]
+      }
+    ],
+    "flags": [ "CLIMB_FLYING", "ITEM_WATERPROOFING", "LEVITATION", "WATERWALKING" ]
+  },
+  {
+    "id": "anime_electromagnetism_effect",
+    "type": "effect_type",
+    "name": [ "Electromagnetism (effect)" ],
+    "desc": [ "Allows you to climb surfaces." ],
+    "rating": "good",
+    "flags": [ "CLIMB_NO_LADDER" ],
+    "//WIP": "Expand her 'magnetism' spell, that heavily relies on ter_fur_transforms and nearby sources of metal"
+  },
+  {
+    "id": "iron_sand_manipulation_effect",
+    "type": "effect_type",
+    "name": [ "Iron sand manipulation (effect)" ],
+    "desc": [ "You're manipulating iron sand…" ],
+    "rating": "good",
+    "enchantments": [ 
+      { 
+        "condition": { "not": "u_has_weapon" },
+        "values": [ 
+          { "value": "ARMOR_BASH", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 1 )" ] } },
+          { "value": "ARMOR_BULLET", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 1 )" ] } },
+          { "value": "ARMOR_CUT", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 1 )" ] } },
+          { "value": "ARMOR_STAB", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 1 )" ] } },
+          { "value": "ARMOR_ACID", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 2 )" ] } },
+          { "value": "ARMOR_BIO", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 2 )" ] } },
+          { "value": "ARMOR_COLD", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 2 )" ] } },
+          { "value": "ARMOR_ELEC", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 2 )" ] } },
+          { "value": "ARMOR_HEAT", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 2 )" ] } }
+        ] 
+      },
+      { 
+        "condition": "u_has_weapon",
+        "values": [ 
+          { "value": "ARMOR_BASH", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 3 )" ] } },
+          { "value": "ARMOR_BULLET", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 3 )" ] } },
+          { "value": "ARMOR_CUT", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 3 )" ] } },
+          { "value": "ARMOR_STAB", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 3 )" ] } },
+          { "value": "ARMOR_ACID", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 5 )" ] } },
+          { "value": "ARMOR_BIO", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 5 )" ] } },
+          { "value": "ARMOR_COLD", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 5 )" ] } },
+          { "value": "ARMOR_ELEC", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 5 )" ] } },
+          { "value": "ARMOR_HEAT", "add": { "math": [ " - max( 2, ( u_val('focus') * 0.25 - 5 ) / 5 )" ] } }
+        ] 
+      }
+    ],
+    "//": "Adds (2 - 20) physical armor scaling from (28 - 100) focus. Minimum armor granted is set to 2, no upper limit for +100 focus",
+    "//2": "Grants less armor for elemental attacks. Grants further less armor when wielding anything",
+    "//3": "ARMOR_X add -n ADDS armor for n value."
+  },
+  {
+    "id": "kakuzu_mood_effect",
+    "type": "effect_type",
+    "name": [ "<color_red>Enraged</color>" ],
+    "desc": [ "You're <color_red>ANGRY</color>." ],
+    "enchantments": [ 
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "STRENGTH", "add": 4 }, 
+          { "value": "UGLINESS", "add": 2 }, 
+          { "value": "SOCIAL_INTIMIDATE", "add": 4 }, 
+          { "value": "SOCIAL_LIE", "add": -12 }, 
+          { "value": "SOCIAL_PERSUADE", "add": -12 } 
+        ] 
+      }
+    ],
+    "//": "No INT demerit as the var_MOOD is used for the spells"
+  },
+  {
+    "id": "kakuzu_thread_heart_effect",
+    "type": "effect_type",
+    "name": [ "" ],
+    "desc": [ "" ],
+    "max_duration": "1 s",
+    "max_intensity": 1,
+    "max_effective_intensity": 1,
+    "//": "Used to tag Kakuzu's potential new cardiac source"
+  },
+  {
+    "id": "mikoto_mood_effect",
+    "type": "effect_type",
+    "name": [ "<color_light_red>Angry</color>" ],
+    "desc": [ "You're <color_light_red>pissed off</color>." ],
+    "max_intensity": 1,
+    "max_effective_intensity": 1
+  },
+  {
+    "id": "sharingan_base_effect",
+    "type": "effect_type",
+    "name": [ "<color_red>Sharingan</color> (active)" ],
+    "desc": [ "" ],
+    "max_intensity": 1,
+    "max_effective_intensity": 1,
+    "enchantments": [ 
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "PERCEPTION", "multiply": 1 },
+          { "value": "REGEN_MANA", "multiply": -0.5 },
+          { "value": "SPEED", "multiply": 0.1 }
+        ] 
+      }
+    ],
+    "//": "Grants baseline sharingan stuff. This is connected to sharingan_gain_effect_eoc to grant character-specific stuff",
+    "//2": "Character-specific sharingan buffs are handled separatedly",
+    "//3": "Base mana regen is total mana pool every 8 h (100% = 1), 33% of base mana regen thus equals total mana pool over ~24 h, 50% equals total mana pool over ~16 h"
+  },
+  {
+    "id": "sharingan_itachi_effect",
+    "type": "effect_type",
+    "name": [ "" ],
+    "desc": [ "" ],
+    "max_intensity": 1,
+    "max_effective_intensity": 1,
+    "enchantments": [ 
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "REGEN_MANA", "multiply": 0.45 }
+        ] 
+      }
+    ],
+    "//": "Mana regen almost nullifies base sharingan mana regen demerit for Itachi, so he can keep it active at all times"
+  },
+  {
+    "id": "mangekyou_base_effect",
+    "type": "effect_type",
+    "name": [ "<color_red>Mangekyou Sharingan</color> (active)" ],
+    "desc": [ "" ],
+    "max_intensity": 1,
+    "max_effective_intensity": 1,
+    "enchantments": [ 
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "PERCEPTION", "multiply": 0.5 },
+          { "value": "SPEED", "multiply": 0.05 }
+        ] 
+      }
+    ],
+    "//": "Grants baseline sharingan stuff. This is connected to sharingan_gain_effect_eoc to grant character-specific stuff",
+    "//2": "No REGEN_MANA enchantment, as the mana drain is handled by the eoc"
+  },
+  {
+    "id": "mangekyou_susanoo_defense_effect",
+    "type": "effect_type",
+    "name": [ "Susanoo (defensive)" ],
+    "desc": [ "Encased in spiritual defenses." ],
+    "rating": "good",
+    "flags": [ "CANNOT_MOVE", "CANNOT_TAKE_DAMAGE" ]
+  },
+  {
+    "id": "stance_ninja_taijutsu_effect",
+    "type": "effect_type",
+    "name": [ "[Stance] Taijutsu" ],
+    "desc": [ "" ],
+    "apply_message": "You prepare to fight with taijutsu.",
+    "remove_message": "",
+    "rating": "good",
+    "enchantments": [ 
+      { 
+        "condition": "ALWAYS",
+        "values": [ 
+          { "value": "ATTACK_SPEED", "multiply": -0.1 },
+          { "value": "MOVE_COST", "multiply": -0.1 },
+          { "value": "ITEM_DAMAGE_BASH", "add": { "math": [ "1 + rand( max( u_skill('unarmed') * 2, u_skill('melee') * 1.5 ) * 1/3 )" ] } },
+          { "value": "OVERKILL_DAMAGE", "multiply": -2 },
+          { "value": "EVASION", "add": 0.05 }
+        ] 
+      }
+    ],
+    "//": "Should always be one 'step' of Taijutsu worth of damage, with overkill and evasion"
+  },
+  {
+    "id": "tsukuyomi_effect",
+    "type": "effect_type",
+    "name": [ "Tsukuyomi (effect)" ],
+    "desc": [ "Trapped under Tsukuyomi." ],
+    "show_in_info": true,
+    "rating": "bad",
+    "flags": [ "CANNOT_ATTACK", "CANNOT_MOVE", "CANNOT_TAKE_DAMAGE" ]
+  },
+  {
+    "id": "worst_mood_effect",
+    "type": "effect_type",
+    "name": [ "Used to pain" ],
+    "desc": [ "You're used to pain, failure, discomfort." ],
+    "max_intensity": 1,
+    "max_effective_intensity": 1,
+    "//": "This is mostly a dummy effect. It tells the player something's going on, and it's used by Worst's pain and mood passives"
+  }
+]

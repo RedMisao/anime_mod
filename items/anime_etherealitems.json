@@ -1,0 +1,32 @@
+[
+  {
+    "id": "iron_sand_sword",
+    "type": "GENERIC",
+    "category": "weapons",
+    "copy-from": "mc_wakizashi",
+    "name": { "str": "Iron sand sword" },
+    "description": "An sword, made from iron sand, and shaped by your power.  It's vibrating.",
+    "price_postapoc": 0,
+    "material": [ "iron" ],
+    "symbol": "/",
+    "color": "black",
+    "use_action": { "type": "transform", "target": "iron_sand_whip", "menu_text": "Extend sword", "msg": "You extend the sword and turn it into a whip.", "need_wielding": true },
+    "extend": { "flags": [ "MAGIC_FOCUS", "NO_REPAIR", "NO_SALVAGE", "ONLY_ONE", "IRON_SAND_WEAPON" ] },
+    "//": "By the way, her iron sand weapons scale from her power. She can GREATLY expand them to swing and destroy Academy city military material in aoe. Which yeah, not balanced"
+  },
+  {
+    "id": "iron_sand_whip",
+    "type": "GENERIC",
+    "category": "weapons",
+    "copy-from": "bullwhip_razor",
+    "name": { "str": "Iron sand whip" },
+    "description": "A whip, made from iron sand, and shaped by your power.  It's vibrating.",
+    "price_postapoc": 0,
+    "material": [ "iron" ],
+    "symbol": "/",
+    "color": "black",
+    "melee_damage": { "cut": 22 },
+    "use_action": { "type": "transform", "target": "iron_sand_sword", "menu_text": "Contract whip", "msg": "You contract the whip and turn it into a sword.", "need_wielding": true },
+    "extend": { "flags": [ "MAGIC_FOCUS", "NO_REPAIR", "NO_SALVAGE", "ONLY_ONE", "IRON_SAND_WEAPON" ] }
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "death_kage_bunshin_eoc",
+    "type": "effect_on_condition",
+    "effect": [ 
+      {
+        "run_eocs": { 
+          "id": "death_kage_bunshin_2_eoc", 
+          "condition": { "math": [ "u_var_kage_bunshin", ">", "0" ] },
+          "effect": [ 
+            { "math": [ "u_var_kage_bunshin", "=", "0" ] },
+            { "math": [ "u_val('mana')", "+=", "50 + rand(100)" ] }
+          ] 
+        },
+        "alpha_talker": "avatar"
+      }
+    ],
+    "//note": "Should be character_id, however see kage_bunshin_owner_eoc "
+  },
+  {
+    "id": "death_kage_bunshin_eoc_WIP",
+    "type": "effect_on_condition",
+    "effect": [
+      { "message": "<global_val:var_kage_bunshin_owner>", "type": "mixed" },
+      {
+        "run_eocs": { 
+          "id": "death_kage_bunshin_2_eoc_WIP", 
+          "condition": { "math": [ "u_var_kage_bunshin", ">", "0" ] },
+          "effect": [ 
+            { "message": "<global_val:player_id>", "type": "mixed" },
+            { "math": [ "u_var_kage_bunshin", "=", "0" ] },
+            { "math": [ "u_hp('ALL_MAJOR')", "-=", "20" ] }
+          ] 
+        },
+        "alpha_talker": "var_kage_bunshin_owner"
+      }
+    ],
+    "//": "Gives alpha error. Regardless, can't test it, see kage_bunshin_owner_eoc "
+  },
+  {
+    "id": "death_kage_bunshin2",
+    "type": "SPELL",
+    "name": { "str": "impurity mine death" },
+    "description": "Death for mon_impurity_mine ",
+    "spell_class": "NONE",
+    "valid_targets": [ "self" ],
+    "effect": "attack",
+    "shape": "blast",
+    "damage_type": "pure",
+    "min_damage": 99,
+    "max_damage": 99,
+    "max_level": 1,
+    "message": "",
+    "flags": [ "NO_EXPLOSION_SFX", "NO_FAIL", "NO_PROJECTILE", "SILENT" ]
+  }
+]

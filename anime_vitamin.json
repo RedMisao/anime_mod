@@ -1,0 +1,13 @@
+[
+  {
+    "id": "vitamin_accelerator_battery",
+    "type": "vitamin",
+    "vit_type": "counter",
+    "name": { "str": "Battery" },
+    "min": 0,
+    "max": 1440,
+    "rate": "-1 m",
+    "flags": [ "NO_DISPLAY" ],
+    "//": "+1 battery regenerated every minute, max 24 h"
+  }
+]
